@@ -1,1 +1,4 @@
-# sisukai3_back
+# Pocketbase
+
+pocketbaseのカスタム品を追加した認証テンプレート
+
