@@ -1,20 +1,4 @@
 services:
-    aiueo:
-        build: ./aiueo
-        container_name: aiueo
-        hostname: aiueo
-        restart: always
-        tty: true
-        volumes:
-            - ./aiueo/src:/root/aiueo
-    kakikukeko:
-        build: ./kakikukeko
-        container_name: kakikukeko
-        hostname: kakikukeko
-        restart: always
-        tty: true
-        volumes:
-            - ./kakikukeko/src:/root/kakikukeko
     nginx:
         container_name: nginx
         hostname: nginx

@@ -135,8 +135,7 @@ def main():
         proxy_pass http://REPLACEHOSTNAME:REPLACEPORT/;   
     }
 
-    # ADDHERE
-""".replace("REPLACEPENDPOINT",project_name).replace("REPLACEHOSTNAME",hostname).replace("REPLACEPORT","8090")
+    # ADDHERE""".replace("REPLACEPENDPOINT",hostname).replace("REPLACEHOSTNAME",hostname).replace("REPLACEPORT","8090")
     
     # 置き換え
     replaced = nginx_conf.replace("# ADDHERE",adddata)
