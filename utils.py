@@ -79,7 +79,7 @@ def main():
     print("compose yaml をバックアップしています")
     # バックアップ作成
     dt_now = datetime.datetime.now()
-    now_time = dt_now.strftime('%Y-%m-%d_%H:%M:%S')
+    now_time = dt_now.strftime('%Y-%m-%d_%H-%M-%S')
     with open(os.path.join(backup_dir,now_time + ".back.yml"),"w",encoding="utf-8") as backyml:
         yaml.dump(yml,backyml,allow_unicode=True,indent=4,Dumper=Dumper)
 
