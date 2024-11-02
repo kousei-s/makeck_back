@@ -5,3 +5,4 @@ databases/
 pocketbase_custom/pbdata/
 .DS_Store
 pocketbase_custom/src/pb_data/
+.env

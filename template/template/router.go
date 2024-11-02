@@ -1,8 +1,8 @@
 package main
 
 import (
-	// "test/controllers"
-	"test/middlewares"
+	// "template/controllers"
+	"template/middlewares"
 	"net/http"
 
 	"github.com/labstack/echo/v4"

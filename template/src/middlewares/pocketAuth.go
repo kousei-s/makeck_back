@@ -35,7 +35,7 @@ func PocketAuth() echo.MiddlewareFunc {
 			token := ctx.Request().Header.Get("Authorization")
 
 			// トークンを検証する
-			user, err := VerityToken(token)
+			user, err := VerifyToken(token)
 
 			// エラー処理
 			if err != nil {
@@ -51,7 +51,7 @@ func PocketAuth() echo.MiddlewareFunc {
 	}
 }
 
-func VerityToken(token string) (UserData, error) {
+func VerifyToken(token string) (UserData, error) {
 	// リクエスト送信
 	req, _ := http.NewRequest("POST", os.Getenv("AUTH_URL"), nil)
 

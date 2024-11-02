@@ -1,32 +1,44 @@
-services:  
-    template_nginx:
+services:
+    aiueo:
+        build: ./aiueo
+        container_name: aiueo
+        hostname: aiueo
         restart: always
-        image: nginx:latest
-        container_name: template_nginx
-        ports:
-            - "8449:80"
+        tty: true
         volumes:
-            # NGINXのコンフィグファイルをホストOSから、ゲストOSに連結する
+            - ./aiueo/src:/root/aiueo
+    kakikukeko:
+        build: ./kakikukeko
+        container_name: kakikukeko
+        hostname: kakikukeko
+        restart: always
+        tty: true
+        volumes:
+            - ./kakikukeko/src:/root/kakikukeko
+    nginx:
+        container_name: nginx
+        hostname: nginx
+        image: nginx:latest
+        ports:
+            - 8449:80
+        restart: always
+        tty: true
+        volumes:
             - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
             - ./nginx/keys:/etc/nginx/keys
             - ./nginx/statics:/etc/nginx/static/statics
-        tty: true
-        hostname: nginx
-
-    redis:
-        image: "redis:latest"
-        volumes:
-            - "./databases/MainRedis:/data"
-        restart: always
-        hostname: redis
-
     pocketbasec:
-        container_name: template_pocketbasec
         build: ./pocketbase_custom
+        container_name: template_pocketbasec
+        hostname: pocketbasec
+        restart: always
+        tty: true
         volumes:
             - ./pocketbase_custom/src:/root/pocketbase
             - ./pocketbase_custom/pbdata:/pocketbase/pb_data
-        tty: true
+    redis:
+        hostname: redis
+        image: redis:latest
         restart: always
-        hostname: pocketbasec
-    
+        volumes:
+            - ./databases/MainRedis:/data

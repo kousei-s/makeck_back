@@ -12,3 +12,16 @@ Applocation URL を
 https://localhost:8449/auth/
 ```
 (サンプル) に変更する
+
+## 機能を追加する場合
+docker-compose.yaml があるディレクトリで
+```
+python3 utils.py 
+```
+を実行して質問に答えてください
+
+### もしpyyaml が存在しない場合
+```
+pip install pyyaml
+```
+を実行してください
