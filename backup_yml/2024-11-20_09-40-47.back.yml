@@ -20,14 +20,6 @@ services:
         volumes:
             - ./pocketbase_custom/src:/root/pocketbase
             - ./pocketbase_custom/pbdata:/pocketbase/pb_data
-    recipe:
-        build: ./recipe
-        container_name: recipe
-        hostname: recipe
-        restart: always
-        tty: true
-        volumes:
-            - ./recipe/src:/root/recipe
     redis:
         hostname: redis
         image: redis:latest
