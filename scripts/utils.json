@@ -1,0 +1,1 @@
+{"containers_dir": "../composes/containers", "nginx_conf_dir": "../nginx/conf.d/include", "template_dir": "../template", "projects": []}

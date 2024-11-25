@@ -1,45 +1,40 @@
-# sisukai3
-シスカイ３のバックエンドリポジトリ
+# Pocketbase 認証キットリポジトリ
 
-# 必要なもの
-- Docker
-- Python3
-- OpenSSL
+## 環境構築
+1. 自己署名SSL の鍵を生成するために
+   - Mac Linux の人
+     - ```./Genkey.sh ```
+     を実行して全てエンター
+    - Windows の人
+      - ``` ./Genkey.bat ```
+      を実行して全てエンター
+    - しっぱしいた場合
+        ファイル内容に書いてあるものをコピーして docker-compose.yaml があるディレクトリで実行してください。
+2. コンテナを起動
+    - 起動コマンド 
+    ```
+    python3 ./scripts/develop.py
+    ```
+3. 各種データ設定
+   1. (必須) [Google Cloud Console](https://console.cloud.google.com/welcome) にアクセスして　Oauth 用の Client ID と シークレットを作成
+   2. (オプション) [Github開発者設定](https://github.com/settings/developers) にアクセスして　Oauth 用の Client ID と シークレットを作成
+   3. (オプション) [Discord開発者コンソール](https://discord.com/developers/applications) にアクセスして　Oauth 用の Client ID と シークレットを作成
+   - リダイレクト URL には全て 
+    ```
+    https://localhost:8501/auth/api/oauth2-redirect
+    ```
+    を設定してください。
+4. Pocketbase の初期設定
+    1. [管理画面](https://localhost:8501/auth/_)にアクセスしてユーザーを作成
+    2. [設定画面](https://localhost:8501/auth/_/#/settings) にアクセス
+    3. Application URL を 
+    ```
+    https://localhost:8501/auth/
+    ```
+    にする
+    4. [認証プロバイダ管理画面](https://localhost:8501/auth/_/#/settings/auth-providers)で (使うもののみ) Google, Github,Discord を設定する
+5. 認証テスト
+   - [ホーム](https://localhost:8501/statics/)にアクセス
+   - ログインしてみる
 
-# 環境構築
-## 鍵の生成
-- MAC Linux の場合
-    - ./Genkey.sh を実行する 
-- Windows の場合
-    - ./Genkey.bat を実行する
-## Docker コンテナの生成
-※ポート 8449 を開けてください
-```
-docker compose up -d --build
-```
-を実行する
-
-## Pocketbase の管理画面
-URL https://localhost:8449/auth/_
-
-## Pocketbase のアプリケーションURL を変更する
-設定画面  https://localhost:8449/auth/_/#/settings
-
-Applocation URL を 
-```
-https://localhost:8449/auth/
-```
-(サンプル) に変更する
-
-## 機能を追加する場合
-docker-compose.yaml があるディレクトリで
-```
-python3 utils.py 
-```
-を実行して質問に答えてください
-
-### もしpyyaml が存在しない場合
-```
-pip install pyyaml
-```
-を実行してください
+# 終わり！
