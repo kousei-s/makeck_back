@@ -19,9 +19,24 @@ func Init() {
 		log.Fatal("failed to connect database")
 	}
 
-	// マイグレーション
-	// db.AutoMigrate(&LinkModel{})
-
 	// グローバル変数に格納
 	dbconn = db
+
+	// // マイグレーション
+	db.AutoMigrate(&Recipe{})
+
+	// マイグレーション
+	db.AutoMigrate(&Category{})
+	//カテゴリーテーブル作成
+	initcategory()
+
+	// マイグレーション
+	db.AutoMigrate(&Material{})
+
+	// マイグレーション
+	db.AutoMigrate(&Process{})
+
+	// マイグレーション
+	db.AutoMigrate(&Tools{})
+
 }

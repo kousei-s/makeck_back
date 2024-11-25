@@ -18,10 +18,13 @@ func main() {
 }
 
 func DebugModel() {
+	//データベース消去
+	// os.Remove("recipe.db")
+
 	// モデル初期化
 	models.Init()
 
-	//でバッグ実行
+	//デバッグ実行
 	models.RunDebug()
 }
 
