@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
 	"os"
 	"recipe/models"
+	"recipe/utils"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 
 func DebugModel() {
 	//データベース消去
-	// os.Remove("recipe.db")
+	os.Remove("recipe.db")
 
 	// モデル初期化
 	models.Init()
@@ -29,7 +29,7 @@ func DebugModel() {
 }
 
 func mainServer() {
-	log.Println("サーバーを起動しています")
+	utils.Println("サーバーを起動しています")
 
 	// サーバー初期化
 	server := InitServer()

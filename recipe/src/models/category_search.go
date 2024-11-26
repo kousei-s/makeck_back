@@ -1,31 +1,25 @@
 package models
 
-import ()
+// カテゴリーからレシピを検索する関数
+func Category_Search(id int) ([]Recipe, error) {
+	// カテゴリ取得
+	category,err := GetCategory(id)
 
-//カテゴリーからレシピを検索する関数
-func Category_Search(id int)([]string,error) {
-	// // カテゴリを定義
-	// category := &Category{
-    //     Id: id,
-    // } 
+	// エラー処理
+	if err != nil {
+		return []Recipe{},err
+	}
 
-    // // 返す配列を定義
-	// recipe_id := []string{}
+	// 返すデータ
+	recipies := []Recipe{}
 
-	// // カテゴリ名からidをLIKE検索で取得
-	// category_len := dbconn.Debug().Where(category).Find(&category).RowsAffected
-	
-	// //取得件数0の時
-	// if category_len == 0 {
-	// 	return []string{}, errors.New("category not found")
-	// }
+	// データベースから取得
+	err = dbconn.Model(&category).Association("Recipes").Find(&recipies)
 
-	// // 取得したカテゴリからIDを抽出
-	// for _, id := range category.Name{
-	// 	recipe_id = append(recipe_id) // IDの型に応じて適切に変更
-	// }
+	// エラー処理
+	if err != nil {
+		return []Recipe{},err
+	}
 
-
-
-	return []string{}, nil
+	return recipies, nil
 }

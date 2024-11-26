@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
+	"recipe/utils"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -39,7 +39,7 @@ func PocketAuth() echo.MiddlewareFunc {
 
 			// エラー処理
 			if err != nil {
-				log.Println(err)
+				utils.Println(err)
 				return ctx.NoContent(http.StatusUnauthorized)
 			}
 
