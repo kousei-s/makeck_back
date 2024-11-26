@@ -1,0 +1,27 @@
+services:
+    nginx:
+        hostname: nginx
+        image: nginx:latest
+        ports:
+            - 8030:80
+        restart: always
+        tty: true
+        volumes:
+            - ../nginx/conf.d:/etc/nginx/conf.d/
+            - ../nginx/keys:/etc/nginx/keys
+            - ../nginx/statics:/etc/nginx/static/statics
+    pocketbasec:
+        build:
+            context: ../pocketbase_custom
+            target: Develop # デバッグ用にビルドする
+        hostname: pocketbasec
+        restart: always
+        tty: true
+        volumes:
+            - ../pocketbase_custom/src:/root/pocketbase
+    redis:
+        hostname: redis
+        image: redis:latest
+        restart: always
+        volumes:
+            - ../databases/MainRedis:/data

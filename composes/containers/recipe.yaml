@@ -1,0 +1,9 @@
+
+services:
+    recipe:
+        build: ../recipe
+        hostname: recipe
+        restart: always
+        tty: true
+        volumes:
+            - ../recipe/src:/root/recipe
