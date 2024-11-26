@@ -2,11 +2,20 @@ package models
 
 import (
 	"log"
+	"recipe/utils"
+	"time"
 )
 
 type Category struct {
-	Id       int    `gorm:"primaryKey"` //カテゴリーID
-	Name     string 					//カテゴリー名
+	Id      int       `gorm:"primaryKey"` //カテゴリーID
+	Name    string    //カテゴリー名
+	Recipes []*Recipe `gorm:"many2many:recipe_category"`
+}
+
+type RecipeCategory struct {
+	CategoryID int    `gorm:"primaryKey"`
+	RecipeID   string `gorm:"primaryKey"`
+	CreatedAt  time.Time
 }
 
 func initcategory() {
@@ -27,10 +36,22 @@ func initcategory() {
 	for index := range categories {
 		//カテゴリー作成
 		result := dbconn.Create(&categories[index])
-		
+
 		if result.Error != nil {
-			log.Println(result)
+			utils.Println(result)
 		}
 	}
 
+}
+
+func GetCategory(id int) (Category, error) {
+	// データを格納する変数
+	data := Category{}
+
+	// 取得
+	result := dbconn.Where(&Category{
+		Id: id,
+	}).First(&data)
+
+	return data, result.Error
 }

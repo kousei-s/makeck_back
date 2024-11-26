@@ -1,0 +1,25 @@
+services:
+    nginx:
+        hostname: nginx
+        image: nginx:latest
+        ports:
+            - 8030:80
+        restart: always
+        tty: true
+        volumes:
+            - ../nginx/conf.d:/etc/nginx/conf.d/
+            - ../nginx/keys:/etc/nginx/keys
+            - ../nginx/statics:/etc/nginx/static/statics
+    pocketbasec:
+        build:
+            context: ../pocketbase_custom
+        hostname: pocketbasec
+        restart: always
+        volumes:
+            - ../pocketbase_custom/pbdata:/pocketbase/pb_data
+    redis:
+        hostname: redis
+        image: redis:latest
+        restart: always
+        volumes:
+            - ../databases/MainRedis:/data

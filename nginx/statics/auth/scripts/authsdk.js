@@ -35,3 +35,7 @@ async function Login(provider) {
     console.log(pb.authStore.token);
     console.log(pb.authStore.model.id);
 }
+
+function GetIcon(userid) {
+    return `/auth/icon/${userid}`;
+}

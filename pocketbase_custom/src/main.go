@@ -10,9 +10,9 @@ import (
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/models"
-	// "github.com/pocketbase/pocketbase/tools/types"
 )
 
+// ユーザーデータ (トークンで返すやつ)
 type UserData struct {
 	UserID      string    // ユーザーID
 	UserName    string    // ユーザー名
@@ -24,6 +24,7 @@ type UserData struct {
 	Updated     time.Time // 更新日
 }
 
+// IDを指定したら帰ってくるユーザーデータ
 type UserInfo struct {
 	UserName string   // ユーザー名
 	Labels   []string // ユーザーについたラベル
