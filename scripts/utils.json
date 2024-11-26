@@ -1,1 +1,1 @@
-{"containers_dir": "../composes/containers", "nginx_conf_dir": "../nginx/conf.d/include", "template_dir": "../template", "projects": []}
+{"containers_dir": "../composes/containers", "nginx_conf_dir": "../nginx/conf.d/include", "template_dir": "../template", "projects": [{"project_name": "recipe", "hostname": "recipe", "compose_path": "../composes/containers/recipe.yaml", "conf_path": "../nginx/conf.d/include/recipe.conf", "setup_script": "../recipe/setup.py", "project_dir": "../recipe"}]}
