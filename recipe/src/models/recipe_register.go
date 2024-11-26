@@ -29,7 +29,7 @@ func Recipe_Register(args RecipeArgs) (string,error) {
 	if err != nil {
 		return "",errors.New("uuid_create_error")
 	}
-
+	
 	// 新しいレシピを作成
 	newRecipe := Recipe{
 		Uid:   uid,
