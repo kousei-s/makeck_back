@@ -8,7 +8,7 @@ import subprocess
 
 # 各種設定
 compose_yaml = "./composes/docker-compose_release.yaml"
-project_name = "atkit_release"
+project_name = "sisukai3_release"
 
 def runCommand(command):
     print("--------------------------------------------------")

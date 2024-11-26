@@ -21,20 +21,20 @@
    3. (オプション) [Discord開発者コンソール](https://discord.com/developers/applications) にアクセスして　Oauth 用の Client ID と シークレットを作成
    - リダイレクト URL には全て 
     ```
-    https://localhost:8501/auth/api/oauth2-redirect
+    https://localhost:8030/auth/api/oauth2-redirect
     ```
     を設定してください。
 4. Pocketbase の初期設定
-    1. [管理画面](https://localhost:8501/auth/_)にアクセスしてユーザーを作成
-    2. [設定画面](https://localhost:8501/auth/_/#/settings) にアクセス
+    1. [管理画面](https://localhost:8030/auth/_)にアクセスしてユーザーを作成
+    2. [設定画面](https://localhost:8030/auth/_/#/settings) にアクセス
     3. Application URL を 
     ```
-    https://localhost:8501/auth/
+    https://localhost:8030/auth/
     ```
     にする
-    4. [認証プロバイダ管理画面](https://localhost:8501/auth/_/#/settings/auth-providers)で (使うもののみ) Google, Github,Discord を設定する
+    4. [認証プロバイダ管理画面](https://localhost:8030/auth/_/#/settings/auth-providers)で (使うもののみ) Google, Github,Discord を設定する
 5. 認証テスト
-   - [ホーム](https://localhost:8501/statics/)にアクセス
+   - [ホーム](https://localhost:8030/statics/)にアクセス
    - ログインしてみる
 
 # 終わり！

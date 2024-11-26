@@ -3,7 +3,7 @@ services:
         hostname: nginx
         image: nginx:latest
         ports:
-            - 8501:80
+            - 8030:80
         restart: always
         tty: true
         volumes:

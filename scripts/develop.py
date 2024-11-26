@@ -9,7 +9,7 @@ import subprocess
 
 # 各種設定
 compose_yaml = "../composes/docker-compose_develop.yaml"
-project_name = "atkit_develop"
+project_name = "sisukai3_develop"
 
 def runCommand(command):
     print("--------------------------------------------------")
