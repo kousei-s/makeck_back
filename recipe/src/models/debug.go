@@ -1,6 +1,8 @@
 package models
 
-import "recipe/utils"
+import (
+	"recipe/utils"
+)
 
 // var name1 = "キャベツ"
 // var name2 = "豚肉"
@@ -16,7 +18,7 @@ var name4 = "菜箸"
 var name5 = "強火で炒める"
 var name6 = "野菜ファイヤー"
 
-var image = "C:\\Users\\2230010\\Pictures\\IMG_6091.png"
+var image = "D:\\Users\\Pictures\\IMG_mattuu.pwg"
 
 func RunDebug() {
 	// ここにデバック用のコードを書く
@@ -40,6 +42,15 @@ func search() {
 		utils.Println(err)
 	}
 	utils.Println(name)
+
+	utils.Println("カテゴリから探す")
+	recipies, err := Category_Search(2)
+	// エラー処理
+	if err != nil {
+		utils.Println(err)
+	}
+	utils.Println(recipies)
+
 }
 
 // 登録の一連の流れ
@@ -107,9 +118,10 @@ func registration() {
 	recipe, err := Recipe_Register(RecipeArgs{
 		Name:  name6,
 		Image: image,
+		//カテゴリー情報を入れる
 		Category: []Category{
-			{Id: 1, Name: "主催"},
-			{Id: 2, Name: "主催"},
+			{Id: 1},
+			{Id: 2},
 		},
 		Prosecc: []Process{process1},
 	})
@@ -119,14 +131,4 @@ func registration() {
 	}
 	utils.Println(recipe)
 
-	utils.ShowLine()
-	// カテゴリから探す
-	recipies, err := Category_Search(2)
-
-	// エラー処理
-	if err != nil {
-		utils.Println(err)
-	}
-
-	utils.Println(recipies)
 }
