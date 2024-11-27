@@ -11,10 +11,10 @@ func main() {
 	Init()
 
 	// モデルのテスト実行
-	DebugModel()
+	// DebugModel()
 
 	// サーバー起動
-	// mainServer()
+	mainServer()
 }
 
 func DebugModel() {
