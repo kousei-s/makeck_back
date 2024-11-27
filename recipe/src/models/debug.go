@@ -4,25 +4,31 @@ import (
 	"recipe/utils"
 )
 
-// var name1 = "キャベツ"
-// var name2 = "豚肉"
-// var name3 = "フライパン"
-// var name4 = "菜箸"
-// var name5 = "中火で炒める"
-// var name6 = "野菜炒め"
-
-var name1 = "レタス"
-var name2 = "牛肉"
+var name1 = "キャベツ"
+var name2 = "豚肉"
 var name3 = "フライパン"
 var name4 = "菜箸"
-var name5 = "強火で炒める"
-var name6 = "野菜ファイヤー"
+var name5 = "中火で炒める"
+var name6 = "野菜炒め"
+var name7 = "下準備"
+var image1 = "D:\\Users\\Pictures\\IMG_mattuu.pwg"
 
-var image = "D:\\Users\\Pictures\\IMG_mattuu.pwg"
 
+var name11 = "レタス"
+var name12 = "牛肉"
+var name13 = "フライパン"
+var name14 = "菜箸"
+var name15 = "強火で炒める"
+var name16 = "野菜ファイヤー"
+var name17 = "調理"
+
+var image11 = "D:\\Users\\Pictures\\IMG_mattuu.pwg"
+	
 func RunDebug() {
 	// ここにデバック用のコードを書く
-	registration()
+	registration(name1,name2,name3,name4,name5,name6,name7,image1)
+	registration(name11,name12,name13,name14,name15,name16,name17,image11)
+
 
 	search()
 }
@@ -54,7 +60,7 @@ func search() {
 }
 
 // 登録の一連の流れ
-func registration() {
+func registration(name1 string,name2 string, name3 string , name4 string , name5 string, name6 string,name7 string,image string) {
 
 	utils.Println("材料登録１")
 	material1, err := Material_Register(MaterialArgs{
@@ -102,17 +108,18 @@ func registration() {
 
 	utils.Println("手順登録１")
 	process1, err := Process_Register(ProcessArgs{
-		name:      name5,
+		name:      name7,
+		description: name5,
 		parallel:  false,
 		time:      10,
 		tools:     []Tools{tool1, tool2},
 		materials: []Material{material1, material2},
 	})
-
 	if err != nil {
 		utils.Println(err)
 	}
 	utils.Println(process1)
+
 
 	utils.Println("レシピ登録")
 	recipe, err := Recipe_Register(RecipeArgs{
@@ -124,6 +131,7 @@ func registration() {
 			{Id: 2},
 		},
 		Prosecc: []Process{process1},
+		LastSatate: Hot,
 	})
 
 	if err != nil {

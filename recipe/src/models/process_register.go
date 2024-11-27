@@ -7,7 +7,8 @@ import (
 
 type Process struct {
 	Uid      string     `gorm:"primaryKey"` //手順ID
-	Name     string     //説明
+	Name     string     //名前
+	description string  //説明
 	Parallel bool       //平行可、不可
 	Time     int        //所要時間
 	Tools    []Tools    `gorm:"foreignKey:processid"` //必要器具
@@ -16,7 +17,8 @@ type Process struct {
 }
 
 type ProcessArgs struct {
-	name      string     //説明
+	name      string     //名前
+	description string   //説明
 	parallel  bool       //平行可、不可
 	time      int        //所要時間
 	tools     []Tools    //必要器具

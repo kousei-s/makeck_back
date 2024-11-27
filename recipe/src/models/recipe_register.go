@@ -5,21 +5,31 @@ import (
 	"recipe/utils"
 )
 
+type LastSatate string
+
+const (
+	Hot    = LastSatate("hot")
+	Cool   = LastSatate("cool")
+	Normal = LastSatate("normal")
+)
+
 // レシピテーブルの構造体宣言
 type Recipe struct {
-	Uid      string      `gorm:"primaryKey"` //レシピID
-	Name     string      //料理名
-	Image    string      //画像パス
-	Category []*Category `gorm:"many2many:recipe_category;foreignKey:uid"` //カテゴリー
-	Process  []Process   `gorm:"foreignKey:recipeid"`                            //手順
+	Uid       string      `gorm:"primaryKey"` //レシピID
+	Name      string      //料理名
+	Image     string      //画像パス
+	Category  []*Category `gorm:"many2many:recipe_category;foreignKey:uid"` //カテゴリー
+	Process   []Process   `gorm:"foreignKey:recipeid"`                      //手順
+	LastState LastSatate //最終状態
 }
 
-// レシピを作成するための引数せんげ
+// レシピを作成するための引数宣言
 type RecipeArgs struct {
 	Name     string
 	Image    string
 	Category []Category
 	Prosecc  []Process
+	LastSatate LastSatate
 }
 
 // データベースにレシピを登録する処理
@@ -36,6 +46,7 @@ func Recipe_Register(args RecipeArgs) (string, error) {
 		Name:    args.Name,
 		Image:   args.Image,
 		Process: args.Prosecc,
+		LastState: args.LastSatate,
 	}
 
 	result := dbconn.Create(&newRecipe)
@@ -48,9 +59,9 @@ func Recipe_Register(args RecipeArgs) (string, error) {
 	append_list := []Category{}
 
 	// カテゴリーを検証
-	for _,val := range args.Category {
+	for _, val := range args.Category {
 		// カテゴリーを検証
-		category,err := GetCategory(val.Id)
+		category, err := GetCategory(val.Id)
 
 		// エラー処理
 		if err != nil {
