@@ -27,7 +27,8 @@ command_str = ""
 
 # プロジェクトを回す
 for pdata in readData["projects"]:
-    command_str += f"-f {pdata["compose_path"]} "
+    compose_path = pdata["compose_path"]
+    command_str += f"-f {compose_path} "
 
 
 # コンテナを落とす
