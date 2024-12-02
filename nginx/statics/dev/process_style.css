@@ -1,0 +1,191 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+label {
+    font-weight: bold;
+    /* margin-top: 20px; */
+    display: block;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px;
+    /* margin: 5px 0 20px; */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input[type="file"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+select {
+    appearance: none; /* デフォルトの矢印を消す */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5"><polygon points="0,0 5,5 10,0" fill="#333"/></svg>'); /* 自作の矢印を追加 */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px; /* 矢印のサイズ */
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.step, .ingredient, .utensil {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+}
+
+#addStepContainer {
+    display: flex;
+    justify-content: space-between; /* ボタンを横に並べる */
+    margin-bottom: 20px; /* 下にマージンを追加 */
+}
+
+.add-button {
+    flex: 1; /* ボタンを均等に広げる */
+    margin: 0 10px; /* ボタン間のスペース */
+}
+
+.submit-button {
+    width: 100%; /* 送信ボタンは全幅 */
+}
+
+.remove-button {
+    background-color: #dc3545;
+    margin-top: 10px;
+}
+
+.remove-button:hover {
+    background-color: #c82333;
+}
+
+/* フォーカス時のスタイル */
+select:focus {
+    border-color: #28a745;
+    outline: none;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+}
+
+.ingredient-row {
+    display: flex; /* フレックスボックスを使用 */
+    justify-content: flex-start; /* 左寄せ */
+    align-items: center; /* 縦の中央揃え */
+    margin-bottom: 10px; /* 各材料の間にマージン */
+}
+
+.ingredient-row label {
+    /* flex: 0 0 20%; 各ラベルの幅を20% */
+    margin-right: 10px; /* ラベルと入力フィールドの間にスペース */
+}
+
+.ingredient-row input {
+    padding: 8px; /* 内側の余白 */
+    border: 1px solid #ccc; /* ボーダー */
+    border-radius: 4px; /* 角を丸く */
+    margin-right: 10px; /* 入力フィールド間のスペース */
+}
+
+.ingredient-row input[name="ingredientName"] {
+    flex: 7; /* 材料名の入力フィールドの幅を7に設定 */
+}
+
+.ingredient-row input[name="ingredientQuantity"] {
+    flex: 1; /* 個数の入力フィールドの幅を1に設定 */
+}
+
+.ingredient-row input[name="ingredientUnit"] {
+    flex: 2; /* 単位の入力フィールドの幅を2に設定 */
+}
+
+.remove-button {
+    background-color: #dc3545; /* 赤色 */
+    color: white; /* テキスト色 */
+    border: none; /* ボーダーなし */
+    padding: 10px 15px; /* 余白 */
+    border-radius: 5px; /* 角を丸く */
+    cursor: pointer; /* ポインタを表示 */
+}
+
+.remove-button:hover {
+    background-color: #c82333; /* ホバー時の色 */
+}
+
+.utensil-row {
+    display: flex; /* フレックスボックスを使用 */
+    justify-content: flex-start; /* 左寄せ */
+    align-items: center; /* 縦の中央揃え */
+    margin-bottom: 10px; /* 各器具の間にマージン */
+}
+
+.utensil-row label {
+    margin-right: 10px; /* ラベルと入力フィールドの間にスペース */
+}
+
+.utensil-row input {
+    padding: 8px; /* 内側の余白 */
+    border: 1px solid #ccc; /* ボーダー */
+    border-radius: 4px; /* 角を丸く */
+    margin-right: 10px; /* 入力フィールド間のスペース */
+}
+
+.utensil-row input[name="utensilName"] {
+    flex: 7; /* 器具名の入力フィールドの幅を7に設定 */
+}
+
+.utensil-row input[name="utensilQuantity"] {
+    flex: 1; /* 個数の入力フィールドの幅を1に設定 */
+}
+
+.utensil-row input[name="utensilUnit"] {
+    flex: 2; /* 単位の入力フィールドの幅を2に設定 */
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    height: 150px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}

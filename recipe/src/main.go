@@ -7,6 +7,9 @@ import (
 )
 
 func main() {
+	//TODO データベースを消す
+	os.Remove("recipe.db")
+
 	// 初期化
 	Init()
 

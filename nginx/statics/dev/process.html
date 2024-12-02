@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>料理登録フォーム</title>
+    <link rel="stylesheet" href="process_style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>料理登録フォーム</h1>
+    <form id="recipeForm">
+
+        <label for="recipeName">料理名:</label>
+        <input type="text" id="recipeName" name="recipeName" required>
+        
+        <label for="recipeImage">料理の画像:</label>
+        <input type="file" id="recipeImage" name="recipeImage" accept="image/*">
+        
+        <div id="stepsContainer">
+            <h2>料理手順</h2>
+            <div id="stepsList"></div> <!-- 手順を表示する場所を囲むdiv -->
+            <div id="addStepContainer" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <button type="button" class="add-button" onclick="addStep()">+ 手順を追加</button>
+                <button type="button" class="add-button" onclick="saveDraft()">下書きを保存</button>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-button">料理を登録</button>
+    </form>
+</div>
+
+<script src="process_script.js"></script>
+
+</body>
+</html>

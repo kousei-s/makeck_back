@@ -49,7 +49,7 @@ func Recipe_Register(args RecipeArgs) (string, error) {
 		LastState: args.LastSatate,
 	}
 
-	result := dbconn.Create(&newRecipe)
+	result := dbconn.Save(&newRecipe)
 
 	if result.Error != nil {
 		return "", result.Error
