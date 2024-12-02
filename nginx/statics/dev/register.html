@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,13 +59,15 @@
         #image-preview {
             max-width: 100%;
             max-height: 300px;
-            display: none; /* 初期状態では非表示 */
+            display: none;
+            /* 初期状態では非表示 */
             margin-top: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
     </style>
 </head>
+
 <body>
     <h1>料理登録フォーム</h1>
     <form id="recipe-form">
@@ -80,7 +83,7 @@
     </form>
 
     <script>
-        document.getElementById('recipe-form').addEventListener('submit', function(event) {
+        document.getElementById('recipe-form').addEventListener('submit', async function (event) {
             event.preventDefault(); // デフォルトの送信を防ぐ
 
             const dishName = document.getElementById('dish-name').value;
@@ -90,6 +93,27 @@
             console.log('料理名:', dishName);
             console.log('画像ファイル:', imageFile);
 
+            // データを送信する
+            const req = await fetch("/recipe/register_recipe",{
+                method: "POST",
+                headers : {
+                    "content-type" : "application/json"
+                },
+                body: JSON.stringify({
+                    "name" : "hello world"
+                })
+            });
+
+            // 成功したか
+            if (req.status != 200) {
+                // 失敗した場合
+                alert("送信に失敗しました");
+                return;
+            }
+
+
+            console.log(await req.json());
+
             // 必要に応じて、フォームのデータを送信する処理をここに追加
         });
 
@@ -97,16 +121,17 @@
             const preview = document.getElementById('image-preview');
             const file = event.target.files[0];
             const reader = new FileReader();
-            
-            reader.onload = function() {
+
+            reader.onload = function () {
                 preview.src = reader.result;
                 preview.style.display = 'block'; // プレビューを表示
             };
-            
+
             if (file) {
                 reader.readAsDataURL(file);
             }
         }
     </script>
 </body>
+
 </html>
