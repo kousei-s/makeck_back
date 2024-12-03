@@ -1,0 +1,86 @@
+{
+  "recipies": [
+    {
+      "Uid": "recipe1",
+      "Name": "スパゲティ・ボロネーゼ"
+    },
+    {
+      "Uid": "recipe2",
+      "Name": "チキンカレー"
+    },
+    {
+      "Uid": "recipe3",
+      "Name": "シーザーサラダ"
+    },
+    {
+      "Uid": "recipe4",
+      "Name": "フルーツポンチ"
+    }
+  ],
+  "tasks": [
+    {
+      "name": "recipe1",
+      "tejuns": {
+        "0d18bf97-fdbe-4180-8446-7cc496507a59": {
+          "id": "a58479ec-5218-46bc-94e5-465609818620",
+          "name": "煮込む",
+          "time": 30
+        },
+        "b1cb34ec-18d2-427e-8953-8f3adf32d473": {
+          "id": "bd1478be-64d9-4ece-9413-8dccd759181f",
+          "name": "材料の準備",
+          "time": 15
+        }
+      },
+      "startTime": 0
+    },
+    {
+      "name": "recipe2",
+      "tejuns": {
+        "1a94d0d1-9cde-47f2-86a6-0af941795ec8": {
+          "id": "a58479ec-5218-46bc-94e5-465609818620",
+          "name": "煮込む",
+          "time": 40
+        },
+        "cd53f93e-a45c-4eea-bbe5-4ad0d88f7e53": {
+          "id": "bd1478be-64d9-4ece-9413-8dccd759181f",
+          "name": "材料の準備",
+          "time": 10
+        }
+      },
+      "startTime": 0
+    },
+    {
+      "name": "recipe3",
+      "tejuns": {
+        "9068564a-a7f0-4989-ad97-07e0981db82d": {
+          "id": "a58479ec-5218-46bc-94e5-465609818620",
+          "name": "ドレッシングを作る",
+          "time": 5
+        },
+        "feb31f0c-b8b6-4ee8-b582-913d80cfde17": {
+          "id": "bd1478be-64d9-4ece-9413-8dccd759181f",
+          "name": "材料の準備",
+          "time": 5
+        }
+      },
+      "startTime": 0
+    },
+    {
+      "name": "recipe4",
+      "tejuns": {
+        "d86595c3-a32e-4712-8df5-4b9cb8d49a4f": {
+          "id": "bd1478be-64d9-4ece-9413-8dccd759181f",
+          "name": "材料の準備",
+          "time": 10
+        },
+        "eab0f5b6-d5fa-4723-9128-fa713a14cd94": {
+          "id": "a58479ec-5218-46bc-94e5-465609818620",
+          "name": "混ぜる",
+          "time": 5
+        }
+      },
+      "startTime": 0
+    }
+  ]
+}

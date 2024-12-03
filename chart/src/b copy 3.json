@@ -1,0 +1,58 @@
+{
+  "recipies": [
+    {
+      "Uid": "recipe1",
+      "Name": "スパゲティ・ボロネーゼ"
+    },
+    {
+      "Uid": "recipe2",
+      "Name": "チキンカレー"
+    },
+    {
+      "Uid": "recipe3",
+      "Name": "シーザーサラダ"
+    },
+    {
+      "Uid": "recipe4",
+      "Name": "フルーツポンチ"
+    }
+  ],
+  "tasks": [
+    {
+      "name": "task1",
+      "tejuns": {
+        "recipe1": {}
+      },
+      "startTime": 30
+    },
+    {
+      "name": "task2",
+      "tejuns": {
+        "recipe2": {}
+      },
+      "startTime": 60
+    },
+    {
+      "name": "task3",
+      "tejuns": {
+        "recipe3": {
+          "id": "d28b870c-6796-4920-982c-83ade61a4dc1",
+          "name": "ドレッシングを作る",
+          "time": 5
+        }
+      },
+      "startTime": 90
+    },
+    {
+      "name": "task4",
+      "tejuns": {
+        "recipe4": {
+          "id": "3feb63ff-d23c-47aa-8c3e-c5d7a7c57369",
+          "name": "混ぜる",
+          "time": 5
+        }
+      },
+      "startTime": 120
+    }
+  ]
+}

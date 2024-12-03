@@ -1,0 +1,79 @@
+{
+  "recipies": [
+    {
+      "Uid": "recipe1",
+      "Name": "スパゲティ・ボロネーゼ",
+      "Divide": [
+        {
+          "Uid": "",
+          "Time": 0,
+          "Parallel": false
+        },
+        {
+          "Uid": "process2",
+          "Time": 30,
+          "Parallel": true
+        }
+      ]
+    },
+    {
+      "Uid": "recipe2",
+      "Name": "チキンカレー",
+      "Divide": [
+        {
+          "Uid": "process1",
+          "Time": 10,
+          "Parallel": false
+        },
+        {
+          "Uid": "process2",
+          "Time": 40,
+          "Parallel": true
+        }
+      ]
+    },
+    {
+      "Uid": "recipe3",
+      "Name": "シーザーサラダ",
+      "Divide": [
+        {
+          "Uid": "process1",
+          "Time": 5,
+          "Parallel": true
+        },
+        {
+          "Uid": "process2",
+          "Time": 5,
+          "Parallel": false
+        },
+        {
+          "Uid": "process3",
+          "Time": 10,
+          "Parallel": false
+        },
+        {
+          "Uid": "process4",
+          "Time": 5,
+          "Parallel": false
+        }
+      ]
+    },
+    {
+      "Uid": "recipe4",
+      "Name": "フルーツポンチ",
+      "Divide": [
+        {
+          "Uid": "process1",
+          "Time": 10,
+          "Parallel": true
+        },
+        {
+          "Uid": "process2",
+          "Time": 5,
+          "Parallel": false
+        }
+      ]
+    }
+  ],
+  "tasks": null
+}

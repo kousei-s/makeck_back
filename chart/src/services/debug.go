@@ -1,6 +1,8 @@
 package services
 
-import "time"
+import (
+	"log"
+)
 
 type LastSatate string
 
@@ -23,16 +25,10 @@ type Recipe struct {
 	Uid       string      `gorm:"primaryKey"` //レシピID
 	Name      string      //料理名
 	Image     string      //画像パス
-	Category  []*Category `gorm:"many2many:recipe_category;foreignKey:uid"` //カテゴリー
 	Process   []Process   `gorm:"foreignKey:recipeid"`                      //手順
 	LastState LastSatate  //最終状態
 }
 
-type Category struct {
-	Id      int       `gorm:"primaryKey"` //カテゴリーID
-	Name    string    //カテゴリー名
-	Recipes []*Recipe `gorm:"many2many:recipe_category"`
-}
 
 type Tools struct {
 	Uid       string `gorm:"primaryKey"` //器具ID
@@ -40,12 +36,6 @@ type Tools struct {
 	Count     int    //個数
 	Unit      string //単位
 	Processid string //手順と紐づけ
-}
-
-type RecipeCategory struct {
-	CategoryID int    `gorm:"primaryKey"`
-	RecipeID   string `gorm:"primaryKey"`
-	CreatedAt  time.Time
 }
 
 type Process struct {
@@ -59,12 +49,11 @@ type Process struct {
 	Recipeid    string     //レシピと紐づけ
 }
 
-func Debug() {
+func Debug()() {
 	recipe1 := Recipe{
 		Uid:       "recipe1",
 		Name:      "スパゲティ・ボロネーゼ",
 		Image:     "/images/spaghetti_bolognese.jpg",
-		Category:  []*Category{{Id: 1, Name: "パスタ"}},
 		LastState: Hot,
 		Process: []Process{
 			{
@@ -85,7 +74,7 @@ func Debug() {
 				Uid:         "process2",
 				Name:        "煮込む",
 				Description: "材料を炒め、トマトソースを加えて煮込む。",
-				Parallel:    false,
+				Parallel:    true,
 				Time:        30,
 				Tools:       []Tools{{Uid: "tool2", Name: "鍋", Count: 1, Unit: "個"}},
 				Material:    []Material{{Uid: "material4", Name: "トマトソース", Count: 400, Unit: "g", Processid: "process2"}},
@@ -98,7 +87,6 @@ func Debug() {
 		Uid:       "recipe2",
 		Name:      "チキンカレー",
 		Image:     "/images/chicken_curry.jpg",
-		Category:  []*Category{{Id: 2, Name: "カレー"}},
 		LastState: Hot,
 		Process: []Process{
 			{
@@ -119,7 +107,7 @@ func Debug() {
 				Uid:         "process2",
 				Name:        "煮込む",
 				Description: "材料を炒めて、スパイスと水を加えて煮込む。",
-				Parallel:    false,
+				Parallel:    true,
 				Time:        40,
 				Tools:       []Tools{{Uid: "tool2", Name: "鍋", Count: 1, Unit: "個"}},
 				Material:    []Material{{Uid: "material4", Name: "カレースパイス", Count: 1, Unit: "袋", Processid: "process2"}},
@@ -132,14 +120,13 @@ func Debug() {
 		Uid:       "recipe3",
 		Name:      "シーザーサラダ",
 		Image:     "/images/caesar_salad.jpg",
-		Category:  []*Category{{Id: 3, Name: "サラダ"}},
 		LastState: Cool,
 		Process: []Process{
 			{
 				Uid:         "process1",
 				Name:        "材料の準備",
 				Description: "野菜を切る。",
-				Parallel:    false,
+				Parallel:    true,
 				Time:        5,
 				Tools:       []Tools{{Uid: "tool1", Name: "包丁", Count: 1, Unit: "本"}},
 				Material: []Material{
@@ -161,6 +148,32 @@ func Debug() {
 				},
 				Recipeid: "recipe3",
 			},
+			{
+				Uid:         "process3",
+				Name:        "サラダを組み立てる",
+				Description: "切った野菜とドレッシングを混ぜる。",
+				Parallel:    false,
+				Time:        10,
+				Tools:       []Tools{{Uid: "tool4", Name: "サラダボウル", Count: 1, Unit: "個"}},
+				Material: []Material{
+					{Uid: "material1", Name: "レタス", Count: 1, Unit: "個", Processid: "process3"},
+					{Uid: "material2", Name: "トマト", Count: 2, Unit: "個", Processid: "process3"},
+					{Uid: "material5", Name: "ドレッシング", Count: 1, Unit: "杯", Processid: "process3"},
+				},
+				Recipeid: "recipe3",
+			},
+			{
+				Uid:         "process4",
+				Name:        "盛り付け",
+				Description: "サラダを皿に盛り付ける。",
+				Parallel:    false,
+				Time:        5,
+				Tools:       []Tools{{Uid: "tool5", Name: "皿", Count: 2, Unit: "枚"}},
+				Material: []Material{
+					{Uid: "material6", Name: "完成したサラダ", Count: 1, Unit: "皿", Processid: "process4"},
+				},
+				Recipeid: "recipe3",
+			},
 		},
 	}
 
@@ -168,14 +181,13 @@ func Debug() {
 		Uid:       "recipe4",
 		Name:      "フルーツポンチ",
 		Image:     "/images/fruits_punch.jpg",
-		Category:  []*Category{{Id: 4, Name: "デザート"}},
 		LastState: Cool,
 		Process: []Process{
 			{
 				Uid:         "process1",
 				Name:        "材料の準備",
 				Description: "フルーツを切る。",
-				Parallel:    false,
+				Parallel:    true,
 				Time:        10,
 				Tools:       []Tools{{Uid: "tool1", Name: "包丁", Count: 1, Unit: "本"}},
 				Material: []Material{
@@ -205,5 +217,14 @@ func Debug() {
 		recipe4,
 	}
 
-	_ = recipes
+	json,err := chart_Register(recipes)
+	if err != nil {
+		log.Println(err)
+	}
+	log.Print(json)
+
+	// err := chart_Register(recipes)
+	// log.Print(err)
 }
+
+

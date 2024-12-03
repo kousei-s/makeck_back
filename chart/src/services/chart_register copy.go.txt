@@ -1,0 +1,111 @@
+package services
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+// Recipe はレシピ情報を表します
+type Recipes struct {
+	Uid     string   `json:"uid"`     // レシピのユニークID
+	Name    string   `json:"name"`    // レシピ名
+	Process []Process `json:"process"` // プロセスのリスト
+}
+
+// Process はレシピのプロセス情報を表します
+type  Processes struct {
+	Uid         string   `json:"uid"`         // プロセスのユニークID
+	Name        string   `json:"name"`        // プロセス名
+	Description string   `json:"description"` // 説明
+	Parallel    bool     `json:"parallel"`    // 並行処理かどうか
+	Time        int      `json:"time"`        // 所要時間
+}
+
+// Task はタスク情報を表します
+type Task struct {
+	Name      string           `json:"name"`      // タスク名
+	Tejuns    map[string]Tejun `json:"tejuns"`    // 手順情報
+	StartTime int              `json:"startTime"` // 開始時間
+}
+
+// Tejun は手順情報を表します
+type Tejun struct {
+	Id   string `json:"id,omitempty"`   // 手順ID (オプション)
+	Name string `json:"name,omitempty"` // 手順名 (オプション)
+	Time int    `json:"time,omitempty"` // 所要時間 (オプション)
+}
+
+// RecipeCollection はレシピとタスクのコレクションを表します
+type RecipeCollection struct {
+	Recipes []ShortRecipe `json:"recipies"` // レシピのリスト
+	Tasks   []Task        `json:"tasks"`    // タスクのリスト
+}
+
+// ShortRecipe は簡略化されたレシピ情報を表します
+type ShortRecipe struct {
+	Uid  string // レシピのユニークID
+	Name string // レシピ名
+}
+
+func chart_Register(recipes []Recipe) (string, error) {
+	shortRecipes := make([]ShortRecipe, len(recipes))
+	for i, recipe := range recipes {
+		shortRecipes[i] = ShortRecipe{
+			Uid:  recipe.Uid,
+			Name: recipe.Name,
+		}
+	}
+	output := RecipeCollection{
+		Recipes: shortRecipes,
+		Tasks:   []Task{},
+	}
+
+	// 各レシピのプロセスを処理
+	taskIndex := 1
+	for _, recipe := range recipes {
+		task := Task{
+			Name:      fmt.Sprintf("task%d", taskIndex),
+			Tejuns:    make(map[string]Tejun),
+			StartTime: taskIndex * 30, // 適当な開始時間を設定
+		}
+
+		for _, process := range recipe.Process {
+			if process.Parallel {
+				// 並行処理のプロセスはそのまま追加
+				task.Tejuns[recipe.Uid] = Tejun{}
+			} else {
+				// 直列処理のプロセスは詳細を追加
+				task.Tejuns[recipe.Uid] = Tejun{
+					Id:   "some-unique-id", // ユニークなIDを生成してください
+					Name: process.Name,
+					Time: process.Time,
+				}
+			}
+		}
+
+		// 常に4つのrecipeidを追加する
+		for _, recipeID := range shortRecipes {
+			if _, exists := task.Tejuns[recipeID.Uid]; !exists {
+				task.Tejuns[recipeID.Uid] = Tejun{}
+			}
+		}
+
+		output.Tasks = append(output.Tasks, task)
+		taskIndex++
+	}
+
+	jsonData, err := json.Marshal(output)
+	if err != nil {
+		return "", err
+	}
+
+	// JSON形式で出力
+	result, err := json.MarshalIndent(output, "", "  ")
+	if err != nil {
+		return "", err
+	}
+
+	fmt.Println(string(result))
+
+	return string(jsonData), nil
+}
