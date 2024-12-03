@@ -11,6 +11,7 @@ const (
 	Hot    = LastSatate("hot")
 	Cool   = LastSatate("cool")
 	Normal = LastSatate("normal")
+	reheat = LastSatate("reheat")
 )
 
 // レシピテーブルの構造体宣言
@@ -20,15 +21,15 @@ type Recipe struct {
 	Image     string      //画像パス
 	Category  []*Category `gorm:"many2many:recipe_category;foreignKey:uid"` //カテゴリー
 	Process   []Process   `gorm:"foreignKey:recipeid"`                      //手順
-	LastState LastSatate //最終状態
+	LastState LastSatate  //最終状態
 }
 
 // レシピを作成するための引数宣言
 type RecipeArgs struct {
-	Name     string
-	Image    string
-	Category []Category
-	Prosecc  []Process
+	Name       string
+	Image      string
+	Category   []Category
+	Prosecc    []Process
 	LastSatate LastSatate
 }
 
@@ -42,10 +43,10 @@ func Recipe_Register(args RecipeArgs) (string, error) {
 
 	// 新しいレシピを作成
 	newRecipe := Recipe{
-		Uid:     uid,
-		Name:    args.Name,
-		Image:   args.Image,
-		Process: args.Prosecc,
+		Uid:       uid,
+		Name:      args.Name,
+		Image:     args.Image,
+		Process:   args.Prosecc,
 		LastState: args.LastSatate,
 	}
 
