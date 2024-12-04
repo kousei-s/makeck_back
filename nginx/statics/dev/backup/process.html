@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>料理の手順登録フォーム</title>
+    <link rel="stylesheet" href="process_style.css">
+</head>
+<body>
+    <h1>料理の手順を登録する</h1>
+    <form action="/submit" method="post">
+        <label for="name">名前:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="parallel">他の作業と並行できるか:</label>
+        <select id="parallel" name="parallel" required>
+            <option value="はい">はい</option>
+            <option value="いいえ">いいえ</option>
+        </select>
+        
+        <label for="duration">所要時間（分）:</label>
+        <input type="number" id="duration" name="duration" min="1" required>
+        
+        <label>必要な器具:</label>
+        <div id="equipment-container" class="field-container">
+            <!-- 初期の器具の入力欄は削除 -->
+        </div>
+        <button type="button" onclick="addEquipmentField()">器具を追加</button>
+
+        <label>必要な材料:</label>
+        <div id="ingredient-container" class="field-container">
+            <!-- 初期の材料の入力欄は削除 -->
+        </div>
+        <button type="button" onclick="addIngredientField()">材料を追加</button>
+        
+        <!-- ボタンをここに移動 -->
+        <div class="button-container">
+            <button type="button" onclick="saveDraft()">下書き保存</button>
+            <input type="submit" value="登録">
+        </div>
+    </form>
+    <script src="process_script.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+    "recipies": [
+        {
+            "id": "1287ce6d-69f0-451a-a669-50cd34e27dff",
+            "name": "イカのリゾット",
+            "category" : 1
+        },
+        {
+            "id": "17039ac1-488f-4c54-93c6-984ec4d7323b",
+            "name": "ココナッツミルクゼリー",
+            "category" : 2
+        },
+        {
+            "id": "016b16e4-d822-4fa0-b62f-c112185ce512",
+            "name": "フランクフルトのソテー",
+            "category" : 3
+        },
+        {
+            "id": "3eebe4d4-d3ba-4e3b-b6ce-e72bbf6e6a7c",
+            "name": "わかめスープ",
+            "category" : 4
+        }
+    ],
+    "1287ce6d-69f0-451a-a669-50cd34e27dff" : {
+        
+    }
+}

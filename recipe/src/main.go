@@ -7,14 +7,17 @@ import (
 )
 
 func main() {
+	//TODO データベースを消す
+	os.Remove("recipe.db")
+
 	// 初期化
 	Init()
 
 	// モデルのテスト実行
-	DebugModel()
+	// DebugModel()
 
 	// サーバー起動
-	// mainServer()
+	mainServer()
 }
 
 func DebugModel() {

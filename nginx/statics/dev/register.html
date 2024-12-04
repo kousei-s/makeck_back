@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>料理登録フォーム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+
+        #image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            display: none;
+            /* 初期状態では非表示 */
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>料理登録フォーム</h1>
+    <form id="recipe-form">
+        <label for="dish-name">料理名:</label>
+        <input type="text" id="dish-name" name="dish-name" required>
+
+        <label for="image">画像:</label>
+        <input type="file" id="image" name="image" accept="image/*" required onchange="previewImage(event)">
+
+        <img id="image-preview" alt="画像プレビュー">
+
+        <input type="submit" value="登録">
+    </form>
+
+    <script>
+        document.getElementById('recipe-form').addEventListener('submit', async function (event) {
+            event.preventDefault(); // デフォルトの送信を防ぐ
+
+            const dishName = document.getElementById('dish-name').value;
+            const imageFile = document.getElementById('image').files[0];
+
+            // ここでデータを処理する（例: APIに送信）
+            console.log('料理名:', dishName);
+            console.log('画像ファイル:', imageFile);
+
+            // データを送信する
+            const req = await fetch("/recipe/register_recipe",{
+                method: "POST",
+                headers : {
+                    "content-type" : "application/json"
+                },
+                body: JSON.stringify({
+                    "name" : "hello world"
+                })
+            });
+
+            // 成功したか
+            if (req.status != 200) {
+                // 失敗した場合
+                alert("送信に失敗しました");
+                return;
+            }
+
+
+            console.log(await req.json());
+
+            // 必要に応じて、フォームのデータを送信する処理をここに追加
+        });
+
+        function previewImage(event) {
+            const preview = document.getElementById('image-preview');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                preview.src = reader.result;
+                preview.style.display = 'block'; // プレビューを表示
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+
+</html>
