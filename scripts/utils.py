@@ -23,8 +23,9 @@ def copy2_verbose(src, dst):
 def CheckCreateCompose(project_name):
     global config
 
+    container_dir = config['containers_dir']
     # ファイルが存在するか
-    if os.path.exists(f"{config['containers_dir']}/{project_name}.yaml"):
+    if os.path.exists(f"{container_dir}/{project_name}.yaml"):
         print("すでにファイルが存在します")
         # 存在する時
         sys.exit(1)
@@ -36,8 +37,9 @@ def CreateCompose(project_name, hostname):
     # チェックする
     CheckCreateCompose(project_name)
 
+    container_dir = config['containers_dir']
     # ファイルを生成する
-    with open(f"{config['containers_dir']}/{project_name}.yaml", "w", encoding="utf-8") as writeCompose:
+    with open(f"{container_dir}/{project_name}.yaml", "w", encoding="utf-8") as writeCompose:
         writeCompose.write(f"""
 services:
     {project_name}:
@@ -54,7 +56,8 @@ def CheckNginxSetting(hostname):
     global config
 
     # ファイルが存在するか
-    if os.path.exists(f"{config['nginx_conf_dir']}/{hostname}.conf"):
+    nginx_conf_dir = config['nginx_conf_dir']
+    if os.path.exists(f"{nginx_conf_dir}/{hostname}.conf"):
         print("すでにファイルが存在します")
         # 存在する時
         sys.exit(1)
@@ -66,8 +69,9 @@ def CreateNginxSetting(hostname):
     # チェックする
     CheckNginxSetting(hostname)
 
+    nginx_conf_dir = config['nginx_conf_dir']
     # ファイルに書き込む
-    with open(f"{config['nginx_conf_dir']}/{hostname}.conf", "w", encoding="utf-8") as writeNginx:
+    with open(f"{nginx_conf_dir}/{hostname}.conf", "w", encoding="utf-8") as writeNginx:
         writeNginx.write("""
 location /REPLACEPENDPOINT/ {
     proxy_set_header Host $host;
@@ -178,12 +182,14 @@ def CreateProject(hostname, project_name):
     # セットアップファイルを実行する
     subprocess.run([sys.executable, "setup.py", project_name,"0.0.0.0:8090", f"/root/{project_name}"], cwd=dst_dir)
 
+    container_dir = config['containers_dir']
+    nginx_conf_dir = config['nginx_conf_dir']
     # リストに追加する
     config["projects"].append({
         "project_name": project_name,
         "hostname": hostname,
-        "compose_path": f"{config['containers_dir']}/{project_name}.yaml",
-        "conf_path": f"{config['nginx_conf_dir']}/{hostname}.conf",
+        "compose_path": f"{container_dir}/{project_name}.yaml",
+        "conf_path": f"{nginx_conf_dir}/{hostname}.conf",
         "setup_script" : f"{dst_dir}/setup.py",
         "project_dir": dst_dir
     })
@@ -201,7 +207,9 @@ def DeleteProject():
     while True:
         print("削除するプロジェクト番号を入力してください (ctrl+c でキャンセル)")
         for index, pdata in enumerate(config["projects"]):
-            print(f"プロジェクト番号: {index}  名前: {pdata["project_name"]}   ホスト名: {pdata["hostname"]}")
+            project_name = pdata["project_name"]
+            hostname = pdata["hostname"]
+            print(f"プロジェクト番号: {index}  名前: {project_name}   ホスト名: {hostname}")
 
         # 入力を受け取る
         input_data = input(">")
@@ -241,7 +249,8 @@ def RegenProject():
     print("再生成します")
 
     for index, pdata in enumerate(config["projects"]):
-        print(f"{pdata["project_name"]} を再生成しています")
+        project_name = pdata["project_name"]
+        print(f"{project_name} を再生成しています")
         # プロジェクトを再生成しています
         try:
             subprocess.run([sys.executable,pdata["setup_script"],"regen"])
@@ -262,7 +271,8 @@ def ListInput(inputdict: dict):
             show_list.append(str(inputdict[ikey]).lower())
 
         # 入力を受け取る
-        input_tag = input(f"項目を入力してください [{",".join(show_list)}]>")
+        show_str = ",".join(show_list)
+        input_tag = input(f"項目を入力してください [{show_str}]>")
 
         if (input_tag.lower() in show_list):
             # 項目のバリデーションが成功した場合
