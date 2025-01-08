@@ -2,13 +2,24 @@ document.addEventListener('DOMContentLoaded', function() {
     loadDraft(); // ページが読み込まれたときに下書きを読み込む
 
     // フォームの送信時に下書きを削除
-    document.getElementById('recipeForm').addEventListener('submit', function(evt) {
+    document.getElementById('recipeForm').addEventListener('submit',async function(evt) {
         evt.preventDefault();
 
         //TODO 送信処理を書く
+        console.log(localStorage.getItem("recipeDraft"));
+
+        const req = await fetch("/recipe/register_recipe",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body : localStorage.getItem("recipeDraft")
+        });
+
+        console.log(await req.json());
 
         // 下書きを削除
-        localStorage.removeItem('recipeDraft');
+        // localStorage.removeItem('recipeDraft');
     });
 });
 
@@ -23,6 +34,13 @@ function addStep() {
         <label for="stepTime">時間 (分):</label>
         <input type="number" name="stepTime" required>
         
+        <label for="stepType">タスクの種類:</label>
+        <select name="stepType" required>
+            <option value="下準備">下準備</option>
+            <option value="調理">調理</option>
+            <option value="仕上げ">仕上げ</option>
+        </select>
+
         <label for="stepConcurrent">並行可・不可:</label>
         <select name="stepConcurrent" required>
             <option value="可">並行可</option>
@@ -48,6 +66,7 @@ function addStep() {
     const stepsList = document.getElementById('stepsList');
     stepsList.appendChild(stepContainer);
 }
+
 
 function addIngredient(button) {
     const ingredientContainer = document.createElement('div');
@@ -106,24 +125,27 @@ function removeUtensil(button) {
 }
 
 function saveDraft() {
+    const recipeCategory = document.getElementById('recipeCategory').value; // 料理の項目を取得
     const recipeName = document.getElementById('recipeName').value;
     const recipeImage = document.getElementById('recipeImage').files[0] ? document.getElementById('recipeImage').files[0].name : "";
+    const finalState = document.getElementById('finalState').value; // 最終状態を取得
     const steps = Array.from(document.querySelectorAll('.step')).map(step => {
         return {
             name: step.querySelector('input[name="stepName"]').value,
-            time: step.querySelector('input[name="stepTime"]').value,
+            time: Number(step.querySelector('input[name="stepTime"]').value), // 数値型に変換
+            type: step.querySelector('select[name="stepType"]').value, // タスクの種類を取得
             concurrent: step.querySelector('select[name="stepConcurrent"]').value,
             ingredients: Array.from(step.querySelectorAll('.ingredient')).map(ingredient => {
                 return {
                     name: ingredient.querySelector('input[name="ingredientName"]').value,
-                    quantity: ingredient.querySelector('input[name="ingredientQuantity"]').value,
+                    quantity: Number(ingredient.querySelector('input[name="ingredientQuantity"]').value), // 数値型に変換
                     unit: ingredient.querySelector('input[name="ingredientUnit"]').value
                 };
             }),
             utensils: Array.from(step.querySelectorAll('.utensil')).map(utensil => {
                 return {
                     name: utensil.querySelector('input[name="utensilName"]').value,
-                    quantity: utensil.querySelector('input[name="utensilQuantity"]').value,
+                    quantity: Number(utensil.querySelector('input[name="utensilQuantity"]').value), // 数値型に変換
                     unit: utensil.querySelector('input[name="utensilUnit"]').value
                 };
             }),
@@ -131,24 +153,29 @@ function saveDraft() {
         };
     });
 
-    const draft = { recipeName, recipeImage, steps };
+    const draft = { recipeCategory, recipeName, recipeImage, finalState, steps }; // 最終状態を含める
     localStorage.setItem('recipeDraft', JSON.stringify(draft)); // 下書きを保存
 }
 
 function loadDraft() {
     const draft = JSON.parse(localStorage.getItem('recipeDraft'));
     if (draft) {
+        document.getElementById('recipeCategory').value = draft.recipeCategory || ""; // 料理の項目
         document.getElementById('recipeName').value = draft.recipeName || "";
         
         if (draft.recipeImage) {
             document.getElementById('recipeImage').value = draft.recipeImage;
         }
 
+        // 最終状態の読み込み
+        document.getElementById('finalState').value = draft.finalState || ""; // 最終状態
+
         draft.steps.forEach(step => {
             addStep();
             const lastStep = document.querySelector('.step:last-child');
             lastStep.querySelector('input[name="stepName"]').value = step.name;
             lastStep.querySelector('input[name="stepTime"]').value = step.time;
+            lastStep.querySelector('select[name="stepType"]').value = step.type; // タスクの種類を設定
             lastStep.querySelector('select[name="stepConcurrent"]').value = step.concurrent;
             lastStep.querySelector('textarea[name="stopDescription"]').value = step.description;
 

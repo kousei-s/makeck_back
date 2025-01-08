@@ -3,18 +3,23 @@ package main
 import (
 	"os"
 	"recipe/models"
+	// "recipe/services"
 	"recipe/utils"
 )
 
 func main() {
 	//TODO データベースを消す
-	os.Remove("recipe.db")
+	// os.Remove("recipe.db")
 
 	// 初期化
 	Init()
 
 	// モデルのテスト実行
 	// DebugModel()
+
+	// モデル初期化
+	// models.Init()
+	// services.Test()
 
 	// サーバー起動
 	mainServer()

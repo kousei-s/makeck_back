@@ -55,3 +55,16 @@ func GetCategory(id int) (Category, error) {
 
 	return data, result.Error
 }
+
+
+func GetCategoryByName(name string) (Category, error) {
+	// データを格納する変数
+	data := Category{}
+
+	// 取得
+	result := dbconn.Where(&Category{
+		Name: name,
+	}).First(&data)
+
+	return data, result.Error
+}

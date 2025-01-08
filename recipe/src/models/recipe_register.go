@@ -78,3 +78,13 @@ func Recipe_Register(args RecipeArgs) (string, error) {
 
 	return uid, err
 }
+
+func (recipe *Recipe) CheckCategory(categoryid int) bool {
+	for _, category := range recipe.Category {
+		if category.Id == categoryid {
+			return true
+		}
+	}
+
+	return false
+}

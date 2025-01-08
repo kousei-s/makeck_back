@@ -25,5 +25,8 @@ func InitServer() *echo.Echo {
 	// レシピ名を登録するエンドポイント
 	server.POST("/register_recipe",controllers.RegisterRecipe)
 	
+	// レシプピを検索するエンドポイント
+	server.POST("/search",controllers.SearchByName)
+	
 	return server
 }
