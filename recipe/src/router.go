@@ -26,7 +26,7 @@ func InitServer() *echo.Echo {
 	server.POST("/register_recipe",controllers.RegisterRecipe)
 	
 	// レシプピを検索するエンドポイント
-	server.GET("/search",controllers.SearchByName)
+	server.POST("/search",controllers.SearchByName)
 	
 	return server
 }

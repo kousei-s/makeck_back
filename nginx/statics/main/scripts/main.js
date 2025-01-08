@@ -30,3 +30,18 @@ async function DoLogout() {
         alert("ログアウトに失敗しました");
     }
 }
+
+async function TestSearch() {
+    const req = await fetch("/recipe/search",{
+        method: "POST",
+        headers: {
+            "Content-Type" : "application/json"
+        },
+        body: JSON.stringify({
+            "name" : "",
+            "category" : "主菜"
+        })
+    })
+
+    console.log(await req.json());
+}

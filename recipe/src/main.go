@@ -14,13 +14,6 @@ func main() {
 	// 初期化
 	Init()
 
-	// モデルのテスト実行
-	// DebugModel()
-
-	// モデル初期化
-	// models.Init()
-	// services.Test()
-
 	// サーバー起動
 	mainServer()
 }
