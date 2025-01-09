@@ -16,7 +16,7 @@ func InitServer() *echo.Echo {
 
 	// ミドルウェア
 	server.Use(middleware.Logger())
-	// server.Use(middleware.Recover())
+	server.Use(middleware.Recover())
 
 	server.POST("/", func(ctx echo.Context) error {
 		return ctx.String(http.StatusOK, "Hello, World!")
@@ -24,6 +24,11 @@ func InitServer() *echo.Echo {
 
 	// レシピ名を登録するエンドポイント
 	server.POST("/register_recipe",controllers.RegisterRecipe)
+	// 画像をアップロードするエンドポイント
+	server.POST("/upload_image",controllers.UploadImage)
+
+	// 画像ディレクトリ公開
+	server.Static("/images", "./images")
 	
 	// レシプピを検索するエンドポイント
 	server.POST("/search",controllers.SearchByName)

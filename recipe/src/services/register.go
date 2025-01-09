@@ -1,17 +1,30 @@
 package services
 
 import (
+	"bytes"
+	"errors"
+	"fmt"
+	"image"
+	"image/color"
+	"image/jpeg"
+	_ "image/png"
+	_ "image/jpeg"
+	_ "image/gif"
+	"io/ioutil"
+	"mime/multipart"
 	"net/http"
+	"os"
 	"recipe/models"
 	"recipe/utils"
+
+	"golang.org/x/image/draw"
 )
 
 type Recipe struct {
-	RecipeName  string `json:"recipeName"`
-	RecipeImage string `json:"recipeImage"`
-	Steps       []Step `json:"steps"`
-	RecipeCategory string `json:"recipeCategory"`
-	FinalState	string `json:"finalState"`
+	RecipeName     string                `json:"recipeName"`
+	Steps          []Step                `json:"steps"`
+	RecipeCategory string                `json:"recipeCategory"`
+	FinalState     string                `json:"finalState"`
 }
 
 // Step represents each step in the recipe.
@@ -55,17 +68,26 @@ func RegisterRecipe(args Recipe) (string, HttpResult) {
 	}
 
 	// カテゴリを変換する
-	categoryId,err := ConvertToCategory(args.RecipeCategory)
+	categoryId, err := ConvertToCategory(args.RecipeCategory)
 
 	// エラー処理
 	if err != nil {
-		return "",HttpResult{Code: http.StatusBadRequest,Msg: err.Error(),Err: err}
+		return "", HttpResult{Code: http.StatusBadRequest, Msg: err.Error(), Err: err}
 	}
 
+	// レシピIDを生成
+	uid, err := utils.Genid()
+	if err != nil {
+		return "", HttpResult{Code: http.StatusInternalServerError, Err: err, Msg: err.Error()}
+	}
+
+	utils.Println(args)
+
 	// 新しいレシピを作成
-	_,err = models.Recipe_Register(models.RecipeArgs{
+	_, err = models.Recipe_Register(models.RecipeArgs{
+		Uid:   uid,
 		Name:  args.RecipeName,
-		Image: "/images/recipe.png",
+		Image: "NoImage",
 		Category: []models.Category{
 			{
 				Id: categoryId,
@@ -77,22 +99,71 @@ func RegisterRecipe(args Recipe) (string, HttpResult) {
 
 	// エラー処理
 	if err != nil {
-		return "",HttpResult{Code: http.StatusInternalServerError,Err: err,Msg: err.Error()}
+		return "", HttpResult{Code: http.StatusInternalServerError, Err: err, Msg: err.Error()}
 	}
 
-	return "", HttpResult{Code: http.StatusOK, Msg: "success", Err: nil}
+
+	return uid, HttpResult{Code: http.StatusOK, Msg: "success", Err: nil}
 }
 
-func ConvertToCategory(category string) (int,error) {
+func resizeImage(src image.Image, width, height int) image.Image {
+	dst := image.NewRGBA(image.Rect(0, 0, width, height))
+	draw.Draw(dst, dst.Bounds(), &image.Uniform{color.White}, image.Point{}, draw.Src)
+	draw.CatmullRom.Scale(dst, dst.Rect, src, src.Bounds(), draw.Over, nil)
+	return dst
+}
+
+// 画像を保存する関数
+func saveImage(fileHeader *multipart.FileHeader, filename string) error {
+	// ファイルを開く
+	src, err := fileHeader.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	// ファイルの内容を読み込む
+	fileBytes, err := ioutil.ReadAll(src)
+	if err != nil {
+		return err
+	}
+
+	// 画像をデコード
+	img, _, err := image.Decode(bytes.NewReader(fileBytes))
+	if err != nil {
+		return err
+	}
+
+	// 画像をリサイズする（幅800、高さはアスペクト比を維持）
+	newWidth := 800
+	newHeight := int(float64(newWidth) * float64(img.Bounds().Dy()) / float64(img.Bounds().Dx()))
+	resizedImg := resizeImage(img, newWidth, newHeight)
+
+	// リサイズした画像を保存
+	outFile, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer outFile.Close()
+
+	// JPEG形式で保存
+	if err := jpeg.Encode(outFile, resizedImg, nil); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func ConvertToCategory(category string) (int, error) {
 	// カテゴリ取得
-	result,err := models.GetCategoryByName(category)
+	result, err := models.GetCategoryByName(category)
 
 	// エラー処理
 	if err != nil {
-		return -1,err
+		return -1, err
 	}
 
-	return result.Id,nil
+	return result.Id, nil
 }
 
 func ConvertToProcess(args Step) (models.Process, error) {
@@ -116,15 +187,43 @@ func ConvertToProcess(args Step) (models.Process, error) {
 	}
 
 	return models.Process{
-		Uid:      uid,
-		Name:     args.Name,
-		Parallel: args.Concurrent == "可",
-		Time:     args.Time,
-		Tools:    tools,
-		Material: materials,
-		Recipeid: "",
+		Uid:         uid,
+		Name:        args.Name,
+		Parallel:    args.Concurrent == "可",
+		Time:        args.Time,
+		Tools:       tools,
+		Material:    materials,
+		Recipeid:    "",
 		Description: args.Description,
 	}, nil
+}
+
+func UploadImage(uid string, file *multipart.FileHeader) error {
+	// レシピ取得
+	recipe, err := models.GetRecipe(uid)
+	if err != nil {
+		return err
+	}
+
+	// noimage 以外の場合
+	if recipe.Image != "NoImage" {
+		return errors.New("Image already exists")
+	}
+
+	recipe.Image = "https://makeck.tail6cf7b.ts.net:8030/recipe/images/" + uid + ".jpg"
+
+	// レシピを更新する
+	if err := models.Recipe_Update(recipe); err != nil {
+		return err
+	}
+
+	// 画像を保存する
+	filename := fmt.Sprintf("./images/%s.jpg", uid)
+	if err := saveImage(file, filename); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func ConvertAllToTools(args []Utensil) ([]models.Tools, error) {

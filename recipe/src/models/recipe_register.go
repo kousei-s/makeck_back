@@ -1,10 +1,5 @@
 package models
 
-import (
-	"errors"
-	"recipe/utils"
-)
-
 type LastSatate string
 
 const (
@@ -26,6 +21,7 @@ type Recipe struct {
 
 // レシピを作成するための引数宣言
 type RecipeArgs struct {
+	Uid        string
 	Name       string
 	Image      string
 	Category   []Category
@@ -35,15 +31,9 @@ type RecipeArgs struct {
 
 // データベースにレシピを登録する処理
 func Recipe_Register(args RecipeArgs) (string, error) {
-	// レシピIDを生成
-	uid, err := utils.Genid()
-	if err != nil {
-		return "", errors.New("uuid_create_error")
-	}
-
 	// 新しいレシピを作成
 	newRecipe := Recipe{
-		Uid:       uid,
+		Uid:       args.Uid,
 		Name:      args.Name,
 		Image:     args.Image,
 		Process:   args.Prosecc,
@@ -74,9 +64,9 @@ func Recipe_Register(args RecipeArgs) (string, error) {
 	}
 
 	// カテゴリーを追加する処理
-	err = dbconn.Model(&newRecipe).Association("Category").Append(append_list)
+	err := dbconn.Model(&newRecipe).Association("Category").Append(append_list)
 
-	return uid, err
+	return args.Uid, err
 }
 
 func (recipe *Recipe) CheckCategory(categoryid int) bool {
@@ -87,4 +77,20 @@ func (recipe *Recipe) CheckCategory(categoryid int) bool {
 	}
 
 	return false
+}
+
+func GetRecipe(uid string) (Recipe, error) {
+	// データを格納する変数
+	data := Recipe{}
+
+	// 取得
+	result := dbconn.Where(&Recipe{
+		Uid: uid,
+	}).First(&data)
+
+	return data, result.Error
+}
+
+func Recipe_Update(recipe Recipe) error {
+	return dbconn.Save(&recipe).Error
 }

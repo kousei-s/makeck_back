@@ -16,7 +16,25 @@ document.addEventListener('DOMContentLoaded', function() {
             body : localStorage.getItem("recipeDraft")
         });
 
-        console.log(await req.json());
+        // 結果を取得
+        const result = await req.json();
+
+        const payload = new FormData();
+        payload.append("image",document.getElementById("recipeImage").files[0]);
+
+        // 画像をアップロード
+        const imgReq = await fetch("/recipe/upload_image",{
+            method: "POST",
+            headers: {
+                "uid" : result["result"]
+            },
+            body: payload
+        })
+
+        // 結果を取得
+        const imgResult = await imgReq.json();
+
+        console.log(imgResult);
 
         // 下書きを削除
         // localStorage.removeItem('recipeDraft');
