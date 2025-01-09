@@ -65,6 +65,34 @@ func SearchByName(ctx echo.Context) error {
 	})
 }
 
+type SearchCategoryParam struct {
+	Category string `json:"category"`
+}
+func SearchByCategory(ctx echo.Context) error {
+	// body 取得
+	var param SearchCategoryParam
+	if err := ctx.Bind(&param); err != nil {
+		// error handling
+		return ctx.JSON(http.StatusBadRequest, echo.Map{
+			"error": err.Error(),
+		})
+	}
+
+	// 検索する
+	recipies,err := services.SearchByCategory(param.Category)
+
+	// エラー処理
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, echo.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return ctx.JSON(http.StatusOK, echo.Map{
+		"result": recipies,
+	})
+}
+
 func UploadImage(ctx echo.Context) error {
 	// body 取得
 	uid := ctx.Request().Header.Get("uid")

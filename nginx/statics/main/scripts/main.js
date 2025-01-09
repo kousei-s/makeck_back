@@ -45,3 +45,17 @@ async function TestSearch() {
 
     console.log(await req.json());
 }
+
+async function TestCategorySearch() {
+    const req = await fetch("/recipe/search_category",{
+        method: "POST",
+        headers: {
+            "Content-Type" : "application/json"
+        },
+        body: JSON.stringify({
+            "category" : "主菜"
+        })
+    })
+
+    console.log(await req.json());
+}

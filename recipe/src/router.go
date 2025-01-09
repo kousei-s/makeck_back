@@ -32,6 +32,9 @@ func InitServer() *echo.Echo {
 	
 	// レシプピを検索するエンドポイント
 	server.POST("/search",controllers.SearchByName)
+
+	// カテゴリからレシピを検索するエンドポイント
+	server.POST("/search_category",controllers.SearchByCategory)
 	
 	return server
 }
