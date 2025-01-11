@@ -27,4 +27,6 @@ services:
         hostname: ai-api
         build: ../ai-api
         tty: true
+        volumes:
+            - ../ai-api/src:/api/src
         restart: always

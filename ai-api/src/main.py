@@ -77,7 +77,11 @@ async def CovertRecipe(request: Request,args: PostURL):
         )
 
         response = chat_session.send_message(json.dumps(result))
-        return JSONResponse(content=json.loads(response.text))
+        result = json.loads(response.text)
+        # recipeImage を削除
+        del result["recipeImage"]
+
+        return JSONResponse(content=result)
     except:
         import traceback
         traceback.print_exc()

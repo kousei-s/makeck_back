@@ -35,6 +35,9 @@ func InitServer() *echo.Echo {
 
 	// カテゴリからレシピを検索するエンドポイント
 	server.POST("/search_category",controllers.SearchByCategory)
+
+	// データを抽出するエンドポイント
+	server.POST("/extract",controllers.Extract,middlewares.PocketAuth())
 	
 	return server
 }

@@ -215,3 +215,48 @@ function loadDraft() {
         });
     }
 }
+
+async function Init() {
+    try {
+        // 認証情報取得
+        const authData = await GetSession();
+
+        console.log(authData["record"]);
+    } catch (ex) {
+        console.error(ex);
+
+        // 認証していない場合ログインに飛ばす
+        window.location.href = LoginURL;
+    }
+}
+
+// 初期化
+Init();
+
+const extractButton = document.getElementById('extractButton');
+extractButton.addEventListener('click', async () => {
+    try {
+        const authData = await GetSession();
+
+        console.log(authData["token"]);
+
+        const req = await fetch("/recipe/extract",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization" : authData["token"],
+            },
+            body : JSON.stringify({
+                "url" : document.getElementById("extractURL").value
+            })
+        });
+
+        const res = await req.json();
+        localStorage.setItem('recipeDraft', res["result"]); // 下書きを保存 (res["result"]);
+        // reload
+        location.reload();
+    } catch (ex) {
+        console.error(ex);
+        alert("失敗しました");
+    }
+});

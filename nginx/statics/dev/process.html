@@ -12,6 +12,12 @@
 
     <div class="container">
         <h1>料理登録フォーム</h1>
+        <label for="extractURL">抽出するURL</label>
+        <div style="display: flex; margin-bottom: 30px;">
+            <input type="text" id="extractURL" name="extractURL" placeholder="cookpad のURLを入力してください">
+            <button id="extractButton" style="width: 100px;">抽出</button>
+        </div>
+        
         <form id="recipeForm">
             <label for="recipeCategory">料理の項目:</label>
             <select id="recipeCategory" name="recipeCategory" required>
@@ -51,6 +57,12 @@
         </form>
     </div>
 
+    <!-- pocketbase のメイン -->
+    <script src="/statics/auth/scripts/pocketbase.umd.js"></script>
+    <!-- 認証Sdk -->
+    <script src="/statics/auth/scripts/authsdk.js"></script>
+
+    <!-- 各種設定 -->
     <script src="process_script.js"></script>
 
 </body>
