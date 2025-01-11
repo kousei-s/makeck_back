@@ -23,3 +23,8 @@ services:
         restart: always
         volumes:
             - ../databases/MainRedis:/data
+    ai-api:
+        hostname: ai-api
+        build: ../ai-api
+        tty: true
+        restart: always
