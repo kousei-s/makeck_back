@@ -1,3 +1,6 @@
 [submodule "nginx/statics/front"]
 	path = nginx/statics/front
 	url = git@github.com:kousei-s/siskai3_front.git
+[submodule "nginx/siskai3_front"]
+	path = nginx/siskai3_front
+	url = git@github.com:kousei-s/siskai3_front.git
