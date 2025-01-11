@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/jpeg"
-	_ "image/png"
-	_ "image/jpeg"
 	_ "image/gif"
+	"image/jpeg"
+	_ "image/jpeg"
+	_ "image/png"
+
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -21,10 +22,10 @@ import (
 )
 
 type Recipe struct {
-	RecipeName     string                `json:"recipeName"`
-	Steps          []Step                `json:"steps"`
-	RecipeCategory string                `json:"recipeCategory"`
-	FinalState     string                `json:"finalState"`
+	RecipeName     string `json:"recipeName"`
+	Steps          []Step `json:"steps"`
+	RecipeCategory string `json:"recipeCategory"`
+	FinalState     string `json:"finalState"`
 }
 
 // Step represents each step in the recipe.
@@ -40,16 +41,16 @@ type Step struct {
 
 // Ingredient represents an ingredient in a step.
 type Ingredient struct {
-	Name     string `json:"name"`
-	Quantity int    `json:"quantity"`
-	Unit     string `json:"unit"`
+	Name     string  `json:"name"`
+	Quantity float32 `json:"quantity"`
+	Unit     string  `json:"unit"`
 }
 
 // Utensil represents a utensil used in a step.
 type Utensil struct {
-	Name     string `json:"name"`
-	Quantity int    `json:"quantity"`
-	Unit     string `json:"unit"`
+	Name     string  `json:"name"`
+	Quantity float32 `json:"quantity"`
+	Unit     string  `json:"unit"`
 }
 
 // レシピのID とエラーを返す
@@ -102,7 +103,6 @@ func RegisterRecipe(args Recipe) (string, HttpResult) {
 		return "", HttpResult{Code: http.StatusInternalServerError, Err: err, Msg: err.Error()}
 	}
 
-
 	return uid, HttpResult{Code: http.StatusOK, Msg: "success", Err: nil}
 }
 
@@ -135,9 +135,7 @@ func saveImage(fileHeader *multipart.FileHeader, filename string) error {
 	}
 
 	// 画像をリサイズする（幅800、高さはアスペクト比を維持）
-	newWidth := 800
-	newHeight := int(float64(newWidth) * float64(img.Bounds().Dy()) / float64(img.Bounds().Dx()))
-	resizedImg := resizeImage(img, newWidth, newHeight)
+	resizedImg := resizeImage(img, 400, 400)
 
 	// リサイズした画像を保存
 	outFile, err := os.Create(filename)

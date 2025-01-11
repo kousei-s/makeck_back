@@ -23,9 +23,9 @@ func InitServer() *echo.Echo {
 	},middlewares.PocketAuth())
 
 	// レシピ名を登録するエンドポイント
-	server.POST("/register_recipe",controllers.RegisterRecipe)
+	server.POST("/register_recipe",controllers.RegisterRecipe,middlewares.PocketAuth())
 	// 画像をアップロードするエンドポイント
-	server.POST("/upload_image",controllers.UploadImage)
+	server.POST("/upload_image",controllers.UploadImage,middlewares.PocketAuth())
 
 	// 画像ディレクトリ公開
 	server.Static("/images", "./images")
@@ -38,6 +38,9 @@ func InitServer() *echo.Echo {
 
 	// データを抽出するエンドポイント
 	server.POST("/extract",controllers.Extract,middlewares.PocketAuth())
+
+	// 必要素材を返すエンドポイント
+	
 	
 	return server
 }

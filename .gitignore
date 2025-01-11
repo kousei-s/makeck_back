@@ -7,3 +7,4 @@ pocketbase_custom/pbdata/
 pocketbase_custom/src/pb_data/
 .env
 __debug_bin*
+recipe/src/images/

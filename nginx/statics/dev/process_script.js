@@ -5,13 +5,21 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('recipeForm').addEventListener('submit',async function(evt) {
         evt.preventDefault();
 
+        // データ保存
+        saveDraft();
+
         //TODO 送信処理を書く
         console.log(localStorage.getItem("recipeDraft"));
 
+        // トークン取得
+        const authData = await GetSession();
+
+        // 登録
         const req = await fetch("/recipe/register_recipe",{
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization" : authData["token"],
             },
             body : localStorage.getItem("recipeDraft")
         });
@@ -26,7 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const imgReq = await fetch("/recipe/upload_image",{
             method: "POST",
             headers: {
-                "uid" : result["result"]
+                "uid" : result["result"],
+                "Authorization" : authData["token"],
             },
             body: payload
         })
@@ -96,7 +105,7 @@ function addIngredient(button) {
             <input type="text" name="ingredientName" required>
             
             <label for="ingredientQuantity">個数:</label>
-            <input type="number" name="ingredientQuantity" required>
+            <input type="number" step="0.1" name="ingredientQuantity" required>
             
             <label for="ingredientUnit">単位:</label>
             <input type="text" name="ingredientUnit" required>
@@ -118,7 +127,7 @@ function addUtensil(button) {
             <input type="text" name="utensilName" required>
             
             <label for="utensilQuantity">個数:</label>
-            <input type="number" name="utensilQuantity" required>
+            <input type="number" step="0.1" name="utensilQuantity" required>
             
             <label for="utensilUnit">単位:</label>
             <input type="text" name="utensilUnit" required>
@@ -145,7 +154,6 @@ function removeUtensil(button) {
 function saveDraft() {
     const recipeCategory = document.getElementById('recipeCategory').value; // 料理の項目を取得
     const recipeName = document.getElementById('recipeName').value;
-    const recipeImage = document.getElementById('recipeImage').files[0] ? document.getElementById('recipeImage').files[0].name : "";
     const finalState = document.getElementById('finalState').value; // 最終状態を取得
     const steps = Array.from(document.querySelectorAll('.step')).map(step => {
         return {
@@ -171,7 +179,7 @@ function saveDraft() {
         };
     });
 
-    const draft = { recipeCategory, recipeName, recipeImage, finalState, steps }; // 最終状態を含める
+    const draft = { recipeCategory, recipeName, finalState, steps }; // 最終状態を含める
     localStorage.setItem('recipeDraft', JSON.stringify(draft)); // 下書きを保存
 }
 
@@ -180,10 +188,6 @@ function loadDraft() {
     if (draft) {
         document.getElementById('recipeCategory').value = draft.recipeCategory || ""; // 料理の項目
         document.getElementById('recipeName').value = draft.recipeName || "";
-        
-        if (draft.recipeImage) {
-            document.getElementById('recipeImage').value = draft.recipeImage;
-        }
 
         // 最終状態の読み込み
         document.getElementById('finalState').value = draft.finalState || ""; // 最終状態
@@ -236,6 +240,8 @@ Init();
 const extractButton = document.getElementById('extractButton');
 extractButton.addEventListener('click', async () => {
     try {
+        extractButton.textContent = "処理中";
+
         const authData = await GetSession();
 
         console.log(authData["token"]);
@@ -257,6 +263,7 @@ extractButton.addEventListener('click', async () => {
         location.reload();
     } catch (ex) {
         console.error(ex);
+        extractButton.textContent = "抽出";
         alert("失敗しました");
     }
 });
