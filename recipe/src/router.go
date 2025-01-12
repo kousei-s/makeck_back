@@ -39,7 +39,6 @@ func InitServer() *echo.Echo {
 	// データを抽出するエンドポイント
 	server.POST("/extract",controllers.Extract,middlewares.PocketAuth())
 
-	// 必要素材を返すエンドポイント
 	
 	
 	return server

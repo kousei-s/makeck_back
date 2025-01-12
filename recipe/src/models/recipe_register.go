@@ -70,7 +70,17 @@ func Recipe_Register(args RecipeArgs) (string, error) {
 }
 
 func (recipe *Recipe) CheckCategory(categoryid int) bool {
-	for _, category := range recipe.Category {
+	Categories := []Category{}
+
+	// データベースから取得
+	err := dbconn.Model(recipe).Association("Category").Find(&Categories)
+
+	// エラー処理
+	if err != nil {
+		return false
+	}
+
+	for _, category := range Categories {
 		if category.Id == categoryid {
 			return true
 		}

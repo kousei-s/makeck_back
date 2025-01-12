@@ -2,6 +2,7 @@ package services
 
 import (
 	"recipe/models"
+	"recipe/utils"
 )
 
 type MatchRecipies struct {
@@ -49,6 +50,8 @@ func SearchByName(name string,category string) ([]MatchRecipies,error) {
 	if err != nil {
 		return []MatchRecipies{},err
 	}
+	
+	utils.Println(recipies)
 
 	for _, recipie := range recipies {
 		// カテゴリで弾く
