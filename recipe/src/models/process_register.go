@@ -7,6 +7,16 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+type ProcessType int
+
+const (
+	CookProcess    ProcessType = 0
+	PrepareProcess ProcessType = 1
+	FinishProcess  ProcessType = 2
+)
+
+const ()
+
 type Process struct {
 	Uid         string     `gorm:"primaryKey"` //手順ID
 	Name        string     //名前
@@ -16,6 +26,7 @@ type Process struct {
 	Tools       []Tools    `gorm:"foreignKey:processid"` //必要器具
 	Material    []Material `gorm:"foreignKey:processid"` //材料
 	Recipeid    string     //レシピと紐づけ
+	Type        int        //手順の種類
 }
 
 type ProcessArgs struct {
@@ -25,6 +36,7 @@ type ProcessArgs struct {
 	time        int        //所要時間
 	tools       []Tools    //必要器具
 	materials   []Material //材料
+	Type        int        //手順の種類
 }
 
 // データベースに手順を登録する関数
@@ -42,6 +54,7 @@ func Process_Register(args ProcessArgs) (Process, error) {
 		Time:     args.time,
 		Tools:    args.tools,
 		Material: args.materials,
+		Type:     args.Type,
 	}
 	result := dbconn.Create(&newProcess)
 

@@ -1,0 +1,9 @@
+
+services:
+    chart:
+        build: ../chart
+        hostname: chart
+        restart: always
+        tty: true
+        volumes:
+            - ../chart/src:/root/chart
