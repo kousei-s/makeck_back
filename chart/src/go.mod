@@ -3,6 +3,7 @@ module chart
 go 1.23.1
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/labstack/echo/v4 v4.12.0
 	google.golang.org/protobuf v1.35.1
 	gorm.io/driver/sqlite v1.5.6

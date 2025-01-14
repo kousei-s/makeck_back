@@ -29,5 +29,6 @@ func Init() {
 	// コントローラー初期化
 	controllers.Init()
 	
+	// recipe_rpc 初期化
 	recipe_rpc.InitClient()
 }

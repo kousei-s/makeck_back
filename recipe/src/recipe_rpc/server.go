@@ -123,6 +123,7 @@ func recipeProcessToProcess(process models.Process) Process {
 		Time:        int32(process.Time),
 		Tools:       tools,
 		Material:    materials,
+		Recipeid:    process.Recipeid,
 		Type:        ProcessType(process.Type),
 	}
 }

@@ -53,6 +53,7 @@ message Process {
     int32 time = 6; // 所要時間
     repeated Tools tools = 7; // 必要器具
     repeated Material material = 8; // 材料
+    string recipeid = 9; // レシピID
     ProcessType type = 10; // 手順の種類
 }
 

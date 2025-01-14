@@ -106,3 +106,9 @@ func GetRecipe(uid string) (Recipe, error) {
 func Recipe_Update(recipe Recipe) error {
 	return dbconn.Save(&recipe).Error
 }
+
+func Recipe_Delete(uid string) error {
+	return dbconn.Where(&Recipe{
+		Uid: uid,
+	}).Delete(&Recipe{}).Error
+}

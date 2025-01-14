@@ -1,10 +1,15 @@
 package recipe_rpc
 
 import (
+	"chart/utils"
 	"log"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+)
+
+var (
+	client RecipeServiceClient
 )
 
 func InitClient() {
@@ -16,22 +21,21 @@ func InitClient() {
 	}
 
 	// GRPC クライアント
-	client := NewRecipeServiceClient(conn)
+	client = NewRecipeServiceClient(conn)
 
+	utils.Println("recipe rpc client initialized")
+}
+
+func GetRecipe(uid string) (*Recipe, error) {
 	response, err := client.GetRecipe(context.Background(), &RecipeRequest{
-		Uid: "098807d7-04ef-4f03-b1e9-e5792da2aeb1",
+		Uid: uid,
 	})
 
 	// エラー処理
 	if err != nil {
-		log.Fatalf("Error when calling SayHello: %s", err)
+		utils.Println(err)
+		return nil, err
 	}
 
-	log.Print(response)
-	for _,val  := range response.Process {
-		log.Println(val)
-		log.Println(val.Material)
-	}
-
-	defer conn.Close()
+	return response, nil
 }

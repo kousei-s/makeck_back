@@ -2,6 +2,7 @@ package main
 
 import (
 	// "chart/controllers"
+	"chart/controllers"
 	"chart/middlewares"
 	"net/http"
 
@@ -20,6 +21,8 @@ func InitServer() *echo.Echo {
 	server.POST("/", func(ctx echo.Context) error {
 		return ctx.String(http.StatusOK, "Hello, World!")
 	},middlewares.PocketAuth())
+
+	server.POST("/genchart", controllers.GenChart)
 	
 	return server
 }
