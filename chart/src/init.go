@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
 	"chart/controllers"
+	"chart/recipe_rpc"
+	"log"
 
 	"github.com/joho/godotenv"
 )
@@ -28,4 +29,5 @@ func Init() {
 	// コントローラー初期化
 	controllers.Init()
 	
+	recipe_rpc.InitClient()
 }

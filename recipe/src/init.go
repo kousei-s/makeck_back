@@ -4,6 +4,7 @@ import (
 	"log"
 	"recipe/controllers"
 	"recipe/models"
+	"recipe/recipe_rpc"
 
 	"github.com/joho/godotenv"
 )
@@ -31,4 +32,8 @@ func Init() {
 
 	// モデル初期化
 	models.Init()
+
+
+	// GRPCサーバーを起動
+	go recipe_rpc.RunServer()
 }

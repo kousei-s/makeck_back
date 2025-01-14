@@ -1,7 +1,7 @@
 syntax = "proto3";
 package recipe;
 
-option go_package = "../recipe_server";
+option go_package = "../recipe_rpc";
 
 // LastStateの列挙型
 enum LastState {

@@ -71,3 +71,19 @@ func GetProcessById(processid string) (Process, error) {
 	}).Preload(clause.Associations).First(&process)
 	return process, result.Error
 }
+
+func (proc *Process) GetTools() ([]Tools, error) {
+	var tools []Tools
+	result := dbconn.Where(&Tools{
+		Processid: proc.Uid,
+	}).Preload(clause.Associations).Find(&tools)
+	return tools, result.Error
+}
+
+func (proc *Process) GetMaterials() ([]Material, error) {
+	var materials []Material
+	result := dbconn.Where(&Material{
+		Processid: proc.Uid,
+	}).Preload(clause.Associations).Find(&materials)
+	return materials, result.Error
+}

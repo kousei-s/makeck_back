@@ -204,15 +204,15 @@ func ConvertToProcess(args Step) (models.Process, error) {
 }
 
 func ConvertTypeToInt(args string) (int, error) {
+	utils.Println(args)
+
 	switch args {
-	case "料理":
-		return 0, nil
-	case "食材":
-		return 1, nil
-	case "飲み物":
-		return 2, nil
-	case "その他":
-		return 3, nil
+	case "調理":
+		return int(models.CookProcess), nil
+	case "下準備":
+		return int(models.PrepareProcess), nil
+	case "仕上げ":
+		return int(models.FinishProcess), nil
 	default:
 		return -1, errors.New("invalid type")
 	}

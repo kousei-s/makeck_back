@@ -4,7 +4,7 @@
 // - protoc             v3.21.12
 // source: recipe.proto
 
-package recipe_server
+package recipe_rpc
 
 import (
 	context "context"
