@@ -1,26 +1,6 @@
 {
   "recipies": [
     {
-      "Uid": "f1ac3c05-d055-4695-8083-ec2434dbafa1",
-      "Name": "田舎風トリのから揚げ",
-      "LastSatate": "hot",
-      "Divide": [
-        {
-          "Uid": "1837a368-f6df-4c2a-937d-5a2494782144",
-          "Time": 10,
-          "Parallel": true,
-          "Type": "prepare"
-        },
-        {
-          "Uid": "f95d4b05-e1b0-4e7e-a59f-eff8e90e376e",
-          "Time": 5,
-          "Parallel": false,
-          "Type": "cook"
-        }
-      ],
-      "Times": 15
-    },
-    {
       "Uid": "1837a368-f6df-4c2a-937d-5a2494782144",
       "Name": "ジャガイモのカリカリ炒め",
       "LastSatate": "hot",
@@ -73,6 +53,26 @@
       "Times": 25
     },
     {
+      "Uid": "f1ac3c05-d055-4695-8083-ec2434dbafa1",
+      "Name": "田舎風トリのから揚げ",
+      "LastSatate": "hot",
+      "Divide": [
+        {
+          "Uid": "1837a368-f6df-4c2a-937d-5a2494782144",
+          "Time": 10,
+          "Parallel": true,
+          "Type": "prepare"
+        },
+        {
+          "Uid": "f95d4b05-e1b0-4e7e-a59f-eff8e90e376e",
+          "Time": 5,
+          "Parallel": false,
+          "Type": "cook"
+        }
+      ],
+      "Times": 15
+    },
+    {
       "Uid": "f36c60e5-1345-4bc1-9359-7daee17121d5",
       "Name": "アスパラのクリームスープ",
       "LastSatate": "reheat",
@@ -100,7 +100,7 @@
         "6e30f2b1-e3bf-4b87-99fa-6f0293de01d2": {
           "id": "1ac5e5fb-80b9-4362-8459-928af4179668",
           "name": "下準備",
-          "time": 10
+          "time": 15
         },
         "f1ac3c05-d055-4695-8083-ec2434dbafa1": {},
         "f36c60e5-1345-4bc1-9359-7daee17121d5": {}
@@ -112,41 +112,32 @@
         "1837a368-f6df-4c2a-937d-5a2494782144": {},
         "6e30f2b1-e3bf-4b87-99fa-6f0293de01d2": {
           "id": "49755bf9-9f33-4c13-82d9-310ead9cffa4",
+          "name": "仕上げ",
+          "time": 60
+        },
+        "f1ac3c05-d055-4695-8083-ec2434dbafa1": {
+          "id": "8af501e8-672a-4a14-8653-28689a3783d4",
           "name": "下準備",
           "time": 10
         },
-        "f1ac3c05-d055-4695-8083-ec2434dbafa1": {},
         "f36c60e5-1345-4bc1-9359-7daee17121d5": {}
       },
-      "startTime": 10
-    },
-    {
-      "tejuns": {
-        "1837a368-f6df-4c2a-937d-5a2494782144": {},
-        "6e30f2b1-e3bf-4b87-99fa-6f0293de01d2": {
-          "id": "8af501e8-672a-4a14-8653-28689a3783d4",
-          "name": "仕上げ",
-          "time": 55
-        },
-        "f1ac3c05-d055-4695-8083-ec2434dbafa1": {},
-        "f36c60e5-1345-4bc1-9359-7daee17121d5": {
-          "id": "4172efa2-dded-4488-92a5-7db8d6fbee71",
-          "name": "下準備",
-          "time": 5
-        }
-      },
-      "startTime": 20
+      "startTime": 15
     },
     {
       "tejuns": {
         "1837a368-f6df-4c2a-937d-5a2494782144": {},
         "6e30f2b1-e3bf-4b87-99fa-6f0293de01d2": {},
         "f1ac3c05-d055-4695-8083-ec2434dbafa1": {
-          "id": "74bab476-a683-4db2-8d17-125a0c893b48",
+          "id": "4172efa2-dded-4488-92a5-7db8d6fbee71",
           "name": "下準備",
-          "time": 5
+          "time": 15
         },
-        "f36c60e5-1345-4bc1-9359-7daee17121d5": {}
+        "f36c60e5-1345-4bc1-9359-7daee17121d5": {
+          "id": "c6078a71-a6e2-44fe-9a03-7103cdd7d8a5",
+          "name": "下準備",
+          "time": 10
+        }
       },
       "startTime": 25
     },
@@ -158,18 +149,14 @@
           "time": 10
         },
         "6e30f2b1-e3bf-4b87-99fa-6f0293de01d2": {},
-        "f1ac3c05-d055-4695-8083-ec2434dbafa1": {
-          "id": "c95ede0c-0d89-4ee5-961d-a089f87e31ec",
-          "name": "調理",
-          "time": 15
-        },
+        "f1ac3c05-d055-4695-8083-ec2434dbafa1": {},
         "f36c60e5-1345-4bc1-9359-7daee17121d5": {
-          "id": "a651fa3d-176f-4dfc-b635-cd1d7c8fce90",
+          "id": "74bab476-a683-4db2-8d17-125a0c893b48",
           "name": "調理",
           "time": 15
         }
       },
-      "startTime": 30
+      "startTime": 35
     },
     {
       "tejuns": {
@@ -178,16 +165,29 @@
         "f1ac3c05-d055-4695-8083-ec2434dbafa1": {},
         "f36c60e5-1345-4bc1-9359-7daee17121d5": {
           "id": "a651fa3d-176f-4dfc-b635-cd1d7c8fce90",
-          "name": "仕上げ",
-          "time": 5
+          "name": "調理",
+          "time": 10
         }
       },
       "startTime": 45
     },
     {
       "tejuns": {
+        "1837a368-f6df-4c2a-937d-5a2494782144": {},
+        "6e30f2b1-e3bf-4b87-99fa-6f0293de01d2": {},
+        "f1ac3c05-d055-4695-8083-ec2434dbafa1": {
+          "id": "c95ede0c-0d89-4ee5-961d-a089f87e31ec",
+          "name": "調理",
+          "time": 20
+        },
+        "f36c60e5-1345-4bc1-9359-7daee17121d5": {}
+      },
+      "startTime": 55
+    },
+    {
+      "tejuns": {
         "1837a368-f6df-4c2a-937d-5a2494782144": {
-          "id": "48d37495-9117-4199-994b-e71222dcfbb1",
+          "id": "ad9cfa97-c1eb-4a45-8018-d067ae9fc553",
           "name": "調理",
           "time": 10
         },
@@ -195,21 +195,8 @@
         "f1ac3c05-d055-4695-8083-ec2434dbafa1": {},
         "f36c60e5-1345-4bc1-9359-7daee17121d5": {}
       },
-      "startTime": 50
-    },
-    {
-      "tejuns": {
-        "1837a368-f6df-4c2a-937d-5a2494782144": {},
-        "6e30f2b1-e3bf-4b87-99fa-6f0293de01d2": {},
-        "f1ac3c05-d055-4695-8083-ec2434dbafa1": {
-          "id": "74bab476-a683-4db2-8d17-125a0c893b48",
-          "name": "仕上げ",
-          "time": 15
-        },
-        "f36c60e5-1345-4bc1-9359-7daee17121d5": {}
-      },
-      "startTime": 60
+      "startTime": 75
     }
   ],
-  "totaltime": 75
+  "totaltime": 85
 }

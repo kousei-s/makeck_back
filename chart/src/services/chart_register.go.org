@@ -18,7 +18,7 @@ type Processes struct {
 	Name        string      `json:"name"`        // プロセス名
 	Displayname string      `json:"displayname"` // 表示名
 	Description string      `json:"description"` // 説明
-	Parallel    bool        `json:"parallel"`    // 並行処理かどうか
+	Parallel    bool        `json:"parallel"`    // 並行処理できるかどうか
 	Time        int         `json:"time"`        // 所要時間
 	Type        ProcessType `json:"type"`        // 手順の種類
 }
@@ -31,9 +31,10 @@ type Task struct {
 
 // Tejun は手順情報を表します
 type Tejun struct {
-	Id   string `json:"id,omitempty"`   // 手順ID (オプション)
-	Name string `json:"name,omitempty"` // 手順名 (オプション)
-	Time int    `json:"time,omitempty"` // 所要時間 (オプション)
+	Id       string `json:"id,omitempty"`   // 手順ID (オプション)
+	Name     string `json:"name,omitempty"` // 手順名 (オプション)
+	Time     int    `json:"time,omitempty"` // 所要時間 (オプション)
+	Parallel bool   `json:"parallel"`       // 並行処理できるかどうか
 }
 
 // RecipeCollection はレシピとタスクのコレクションを表します
@@ -49,15 +50,15 @@ type ShortRecipe struct {
 	LastSatate LastSatate
 	Divide     []TaskDivide // タスクの分割情報
 	Times      int          // 累計時間
-	Isused     bool         //既にタスクが入れられたか(default:false)
 }
 
 // TaskDivide はタスクの分割情報を表します
 type TaskDivide struct {
-	Uid      string      // タスクのユニークID
-	Time     int         // 所要時間
-	Parallel bool        // 並行処理かどうか
-	Type     ProcessType // 手順の種類
+	Uid         string      // タスクのユニークID
+	Time        int         // 所要時間
+	Parallel    bool        // 並行処理かどうか
+	Type        ProcessType // 手順の種類
+	Displayname string      // 表示名
 }
 
 // chart_Register はレシピからタスクを生成するメソッド
@@ -74,27 +75,85 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 		return RecipeCollection{}, err
 	}
 
-	log.Println(prioritys_recepi) // 優先度のログ出力
-
 	tasks := []Task{}
 
-	// 優先度に基づいてタスクを生成
-	for _, prioritys := range prioritys_recepi {
-		task, err := chart_CreateTask(simple_recipe, prioritys) // Task型を取得
+	recipe_nums := []int{
+		len(simple_recipe[0].Divide),
+		len(simple_recipe[1].Divide),
+		len(simple_recipe[2].Divide),
+		len(simple_recipe[3].Divide),
+	}
+
+	location := 0
+
+	for {
+		// タスクの横列を一つ生成
+		task_frame := []Task{
+			{
+				Tejuns: make(map[string]Tejun), // 手順情報のマップを初期化
+			},
+		}
+		// 優先度に基づいてタスクを生成
+		task, locations, err := chart_CreateTask(simple_recipe, prioritys_recepi, recipe_nums, task_frame, location) // Task型を取得
 		if err != nil {
 			return RecipeCollection{}, err
 		}
+		tasks = append(task, tasks...) // タスクを追加
+		location = locations
 
-		tasks = append(tasks, task...) // タスクを追加
+		//全部使ったら無限ループを抜ける
+		if recipe_nums[0] == 0 && recipe_nums[1] == 0 && recipe_nums[2] == 0 && recipe_nums[3] == 0 {
+			break
+		}
 	}
 
+	new_tasks, err := chart_createtime(tasks)
+
+	if err != nil {
+		return RecipeCollection{}, err
+	}
 	// タスクコレクションを生成
 	tasks_collection := RecipeCollection{
-		Recipes: nil, // simple_recipe,
-		Tasks:   tasks,
+		Recipes: simple_recipe,
+		Tasks:   new_tasks,
 	}
 
 	return tasks_collection, nil // 生成したタスクを返す
+}
+
+// chart_CreateTask は優先度に基づいてタスクを作成するメソッド
+func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []int, task_frame []Task, location int) ([]Task, int, error) {
+	task_bool := true
+	//順番を前回のタスクにする
+	new_list := priorities[location:]
+	new_list = append(new_list, priorities[:location]...)
+	log.Print("new_list", new_list)
+
+	for i, priority := range new_list {
+		if task_bool && recipe_nums[i] > 0 {
+			task_frame[0].Tejuns[priority] = Tejun{
+				Id:       recipes[i].Divide[recipe_nums[i]-1].Uid,
+				Name:     string(recipes[i].Divide[recipe_nums[i]-1].Displayname),
+				Time:     recipes[i].Divide[recipe_nums[i]-1].Time,
+				Parallel: recipes[i].Divide[recipe_nums[i]-1].Parallel,
+			}
+
+			recipe_nums[i]--
+
+			// 並行処理可の場合は、次の手順を追加
+			if !(recipes[i].Divide[recipe_nums[i]].Parallel) {
+				task_bool = false
+				location = i + 1
+				location %= len(recipes)
+			}
+		} else {
+			task_frame[0].Tejuns[priority] = Tejun{
+				Parallel: true,
+			}
+		}
+	}
+
+	return task_frame, location, nil
 }
 
 // chart_Extraction はレシピから必要な情報を抽出するメソッド
@@ -109,13 +168,13 @@ func chart_Extraction(recipes []Recipe) ([]ShortRecipe, error) {
 				return []ShortRecipe{}, err
 			}
 			tasks[j] = TaskDivide{
-				Uid:      uuid,
-				Time:     recipe.Process[j].Time,
-				Parallel: recipe.Process[j].Parallel,
-				Type:     recipe.Process[j].Type,
+				Uid:         uuid,
+				Time:        recipe.Process[j].Time,
+				Parallel:    recipe.Process[j].Parallel,
+				Type:        recipe.Process[j].Type,
+				Displayname: recipe.Process[j].Displayname,
 			}
 			times += recipe.Process[j].Time // 所要時間を合計
-
 		}
 		shortRecipes[i] = ShortRecipe{
 			Uid:        recipe.Uid,
@@ -123,15 +182,8 @@ func chart_Extraction(recipes []Recipe) ([]ShortRecipe, error) {
 			LastSatate: recipe.LastState,
 			Divide:     tasks,
 			Times:      times,
-			Isused:     false,
 		}
 	}
-
-	// JSON形式で出力
-	// result, err := json.MarshalIndent(shortRecipes, "", "  ")
-	// if err != nil {
-	// 	return []ShortRecipe{}, err
-	// }
 
 	return shortRecipes, nil // 簡略化レシピを返す
 }
@@ -166,36 +218,43 @@ func chart_Priority(recipes []ShortRecipe) ([]string, error) {
 	return priority, nil // 優先度リストを返す
 }
 
-// chart_CreateTask は優先度に基づいてタスクを作成するメソッド(未完成)
-func chart_CreateTask(recipes []ShortRecipe, priority string) ([]Task, error) {
-	log.Print("優先度", priority) // 優先度をログ出力
+// chart_time はレシピのstartTimeを計算するメソッド
+func chart_createtime(tasks []Task) ([]Task, error) {
+	startTime := 0
 
-	// タスクを生成
-	task := []Task{
-		{
-			StartTime: 0,                      // 開始時間は適宜設定
-			Tejuns:    make(map[string]Tejun), // 手順情報のマップを初期化
-		},
-	}
+	status := false
 
-	// 実際には、recipesから必要な手順を抽出して追加する必要がある
-	for _, recipe := range recipes {
-		for i := len(recipe.Divide) - 1; i >= 0; i-- {
-			divide := recipe.Divide[i]
-			if divide.Parallel {
-				tejun := Tejun{}
-				task[0].Tejuns[recipe.Uid] = tejun // 手順情報をマップに追加
-			} else {
-				tejun := Tejun{
-					Id:   recipe.Uid,
-					Name: string(divide.Type), // 手順名は適宜設定
-					Time: recipe.Times,   // 所要時間は適宜設定
-				}
-				task[0].Tejuns[recipe.Uid] = tejun // 手順情報をマップに追加
+	new_tasks := []Task{}
+
+	for i, task := range tasks {
+		for _, tejun := range task.Tejuns {
+			if !(tejun.Parallel) && i < len(tasks) - 1 {
+				startTime += tejun.Time
+				log.Println(tejun, startTime)
+				tasks[i + 1].StartTime = startTime
+				status = true
 			}
 		}
 
+		if status {
+			new_tasks = append(new_tasks, task)
+			continue
+		}
+
+		temp := 0
+		for _, tejun := range task.Tejuns {
+			if temp < tejun.Time {
+				temp = tejun.Time
+				startTime += temp
+				log.Println(temp, startTime)
+			}
+		}
+		
+		new_tasks = append(new_tasks, Task{
+			StartTime: temp,
+			Tejuns:    tasks[i + 1].Tejuns,
+		})
 	}
 
-	return task, nil
+	return new_tasks, nil
 }

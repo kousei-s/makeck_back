@@ -2,7 +2,6 @@ package services
 
 import (
 	"chart/utils"
-	"log"
 )
 
 // Recipe はレシピ情報を表します
@@ -54,11 +53,11 @@ type ShortRecipe struct {
 
 // TaskDivide はタスクの分割情報を表します
 type TaskDivide struct {
-	Uid      string      // タスクのユニークID
-	Time     int         // 所要時間
-	Parallel bool        // 並行処理かどうか
-	Type     ProcessType // 手順の種類
-	Displayname  string  // 表示名
+	Uid         string      // タスクのユニークID
+	Time        int         // 所要時間
+	Parallel    bool        // 並行処理かどうか
+	Type        ProcessType // 手順の種類
+	Displayname string      // 表示名
 }
 
 // chart_Register はレシピからタスクを生成するメソッド
@@ -83,8 +82,11 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 		len(simple_recipe[2].Divide),
 		len(simple_recipe[3].Divide),
 	}
-
+	//現在のタスクの位置(次何番目のレシピを入れるか)
 	location := 0
+
+	//最大時間
+	max_times := 0
 
 	for {
 		// タスクの横列を一つ生成
@@ -94,37 +96,43 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 			},
 		}
 		// 優先度に基づいてタスクを生成
-		task, locations, err := chart_CreateTask(simple_recipe, prioritys_recepi, recipe_nums, task_frame, location) // Task型を取得
+		task, locations,max_time, err := chart_CreateTask(simple_recipe, prioritys_recepi, recipe_nums, task_frame, location, max_times) // Task型を取得
 		if err != nil {
 			return RecipeCollection{}, err
 		}
+		max_times += max_time 
 		tasks = append(task, tasks...) // タスクを追加
 		location = locations
+
 		//全部使ったら無限ループを抜ける
 		if recipe_nums[0] == 0 && recipe_nums[1] == 0 && recipe_nums[2] == 0 && recipe_nums[3] == 0 {
 			break
 		}
 	}
 
+	new_tasks, err := chart_createtime(tasks)
+
+	if err != nil {
+		return RecipeCollection{}, err
+	}
 	// タスクコレクションを生成
 	tasks_collection := RecipeCollection{
 		Recipes: simple_recipe,
-		Tasks:   tasks,
+		Tasks:   new_tasks,
 	}
 
 	return tasks_collection, nil // 生成したタスクを返す
 }
 
-// chart_CreateTask は優先度に基づいてタスクを作成するメソッド(未完成)
-func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []int, task_frame []Task, location int) ([]Task, int, error) {
+// chart_CreateTask は優先度に基づいてタスクを作成するメソッド
+func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []int, task_frame []Task, location int, max_time int) ([]Task, int,int, error) {
 	task_bool := true
 	//順番を前回のタスクにする
 	new_list := priorities[location:]
 	new_list = append(new_list, priorities[:location]...)
-	log.Print("new_list", new_list)
-
+	temp_time := max_time
 	for i, priority := range new_list {
-		if task_bool && recipe_nums[i] > 0 {
+		if task_bool && recipe_nums[i] > 0 && (recipes[i].Divide[recipe_nums[i]-1].Time <= max_time || i == 1) {
 			task_frame[0].Tejuns[priority] = Tejun{
 				Id:       recipes[i].Divide[recipe_nums[i]-1].Uid,
 				Name:     string(recipes[i].Divide[recipe_nums[i]-1].Displayname),
@@ -132,12 +140,16 @@ func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []
 				Parallel: recipes[i].Divide[recipe_nums[i]-1].Parallel,
 			}
 
-			recipe_nums[i] -= 1
+			recipe_nums[i]--
+
 			// 並行処理可の場合は、次の手順を追加
 			if !(recipes[i].Divide[recipe_nums[i]].Parallel) {
 				task_bool = false
 				location = i + 1
 				location %= len(recipes)
+			}
+			if recipes[i].Divide[recipe_nums[i]].Time > temp_time {
+				temp_time = recipes[i].Divide[recipe_nums[i]].Time
 			}
 		} else {
 			task_frame[0].Tejuns[priority] = Tejun{
@@ -145,8 +157,8 @@ func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []
 			}
 		}
 	}
-
-	return task_frame, location, nil
+	max_time = temp_time
+	return task_frame, location,max_time, nil
 }
 
 // chart_Extraction はレシピから必要な情報を抽出するメソッド
@@ -161,10 +173,10 @@ func chart_Extraction(recipes []Recipe) ([]ShortRecipe, error) {
 				return []ShortRecipe{}, err
 			}
 			tasks[j] = TaskDivide{
-				Uid:      uuid,
-				Time:     recipe.Process[j].Time,
-				Parallel: recipe.Process[j].Parallel,
-				Type:     recipe.Process[j].Type,
+				Uid:         uuid,
+				Time:        recipe.Process[j].Time,
+				Parallel:    recipe.Process[j].Parallel,
+				Type:        recipe.Process[j].Type,
 				Displayname: recipe.Process[j].Displayname,
 			}
 			times += recipe.Process[j].Time // 所要時間を合計
@@ -212,13 +224,39 @@ func chart_Priority(recipes []ShortRecipe) ([]string, error) {
 }
 
 // chart_time はレシピのstartTimeを計算するメソッド
-// func chart_createtime(tasks []Task) ([]Task, error) {
-// 	for _,task  := range tasks[:1] {
-// 		for _,tejun := range task.Tejuns {
-// 			if tejun.Parallel && { 
+func chart_createtime(tasks []Task) ([]Task, error) {
+	startTime := 0
+
+	status := false
+
+	new_tasks := []Task{}
+
+	for i, task := range tasks {
+		for _, tejun := range task.Tejuns {
+			if !(tejun.Parallel) && i < len(tasks) - 1 {
+				startTime += tejun.Time
+				tasks[i + 1].StartTime = startTime
+				status = true
+			}
+		}
+
+		if status {
+			new_tasks = append(new_tasks, task)
+			continue
+		}
+
+		temp := 0
+		for _, tejun := range task.Tejuns {
+			if temp < tejun.Time {
+				temp = tejun.Time
+				startTime += temp
+			}
+		}
 		
-// 			}
-// 		}
-// 	}
-// 	return tasks, nil
-// }
+		new_tasks = append(new_tasks, Task{
+			StartTime: temp,
+			Tejuns:    tasks[i + 1].Tejuns,
+		})
+	}
+	return new_tasks, nil
+}
