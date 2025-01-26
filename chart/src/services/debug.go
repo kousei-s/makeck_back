@@ -71,7 +71,7 @@ func Debug() {
 		LastState: Hot,
 		Process: []Process{
 			{
-				Uid:         "process1",
+				Uid:         "r1_process1",
 				Name:        "肉と野菜を切る",
 				Displayname: "下準備1",
 				Description: "玉ねぎを1個、ニンジンを1本,ひき肉を200g切る",
@@ -87,7 +87,7 @@ func Debug() {
 				Type:     Prepare,
 			},
 			{
-				Uid:         "process2",
+				Uid:         "r1_process2",
 				Name:        "材料を炒め、トマトソースを加えて煮込む。",
 				Displayname: "調理1",
 				Description: "下準備で切った肉と野菜をにトマトソースを400gいれ、30分煮込む",
@@ -108,7 +108,7 @@ func Debug() {
 		LastState: Hot,
 		Process: []Process{
 			{
-				Uid:         "process1",
+				Uid:         "r2_process1",
 				Name:        "鶏肉と野菜を切る",
 				Displayname: "下準備1",
 				Description: "玉ねぎを1個、じゃがいもを2個,鶏肉を300g切る",
@@ -124,7 +124,7 @@ func Debug() {
 				Type:     Prepare,
 			},
 			{
-				Uid:         "process2",
+				Uid:         "r2_process2",
 				Name:        "材料を炒めて、スパイスと水を加えて煮込む。",
 				Displayname: "調理1",
 				Description: "下準備で切った肉と野菜をにカレースパイスを1袋いれ、40分煮込む",
@@ -145,7 +145,7 @@ func Debug() {
 		LastState: Cool,
 		Process: []Process{
 			{
-				Uid:         "process1",
+				Uid:         "r3_process1",
 				Name:        "野菜を切る",
 				Displayname: "下準備1",
 				Description: "レタスを1個、トマトを2個切る",
@@ -160,7 +160,7 @@ func Debug() {
 				Type:     Prepare,
 			},
 			{
-				Uid:         "process2",
+				Uid:         "r3_process2",
 				Name:        "ドレッシングを作る",
 				Displayname: "下準備2",
 				Description: "下準備で切った野菜をにオリーブオイルを50ml、酢を20mlいれ、混ぜる",
@@ -175,7 +175,7 @@ func Debug() {
 				Type:     Prepare,
 			},
 			{
-				Uid:         "process3",
+				Uid:         "r3_process3",
 				Name:        "野菜とドレッシングを混ぜる",
 				Displayname: "調理1",
 				Description: "下準備で切った野菜とドレッシングを混ぜる",
@@ -191,7 +191,7 @@ func Debug() {
 				Type:     Cook,
 			},
 			{
-				Uid:         "process4",
+				Uid:         "r3_process4",
 				Name:        "盛り付け",
 				Displayname: "仕上げ",
 				Description: "サラダを皿に盛り付ける。",
@@ -214,7 +214,7 @@ func Debug() {
 		LastState: Cool,
 		Process: []Process{
 			{
-				Uid:         "process1",
+				Uid:         "r4_process1",
 				Name:        "果物を切る",
 				Displayname: "下準備1",
 				Description: "イチゴを100g、キウイを2個、オレンジを1個切る。",
@@ -230,7 +230,7 @@ func Debug() {
 				Type:     Prepare,
 			},
 			{
-				Uid:         "process2",
+				Uid:         "r4_process2",
 				Name:        "混ぜる",
 				Displayname: "調理1",
 				Description: "フルーツを混ぜて、ジュースを加える。",

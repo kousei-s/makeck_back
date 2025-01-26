@@ -1,7 +1,6 @@
 package services
 
 import (
-	"chart/utils"
 	"log"
 )
 
@@ -163,12 +162,9 @@ func chart_Extraction(recipes []Recipe) ([]ShortRecipe, error) {
 		times := 0
 		tasks := make([]TaskDivide, len(recipe.Process)) // タスクのスライスを初期化
 		for j := range recipe.Process {
-			uuid, err := utils.Genid() // ユニークIDを生成
-			if err != nil {
-				return []ShortRecipe{}, err
-			}
+
 			tasks[j] = TaskDivide{
-				Uid:         uuid,
+				Uid:         recipe.Process[j].Uid,
 				Time:        recipe.Process[j].Time,
 				Parallel:    recipe.Process[j].Parallel,
 				Type:        recipe.Process[j].Type,
