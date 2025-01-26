@@ -1,7 +1,7 @@
 package services
 
 import (
-	"log"
+
 )
 
 // Recipe はレシピ情報を表します
@@ -91,7 +91,6 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 
 	//最初のタスクのだけtrue
 	frist_task := true
-	log.Print("prioritys_recepi", prioritys_recepi)
 	for {
 		// タスクの横列を一つ生成
 		task_frame := []Task{
@@ -107,7 +106,6 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 		max_times += max_time
 		tasks = append(task, tasks...) // タスクを追加
 		location = locations
-		log.Print([]int{recipe_nums[0], recipe_nums[1], recipe_nums[2], recipe_nums[3]})
 		//全部使ったら無限ループを抜ける
 		if recipe_nums[0] == 0 && recipe_nums[1] == 0 && recipe_nums[2] == 0 && recipe_nums[3] == 0 {
 			break
@@ -133,11 +131,8 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []int, task_frame []Task, location int, max_time int, frist_task bool) ([]Task, int, int, error) {
 	task_bool := true
 	//順番を前回のタスクにする
-	log.Print("priorities", priorities)
-	log.Print("location", location)
 	new_list := priorities[location:]
 	new_list = append(new_list, priorities[:location]...)
-	log.Print("new_list", new_list)
 	// sample3のインデックスを探す
 	index := -1
 	for i, v := range priorities {
@@ -148,21 +143,17 @@ func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []
 		}
 	}
 
-	log.Print("index", index)
 	temp_time := max_time
 	for i, priority := range new_list {
 		i += location
 		i %= len(recipes)
-		log.Print(priority, "のタスク数", recipe_nums[i])
 		if task_bool && recipe_nums[i] > 0 && (recipes[i].Divide[recipe_nums[i]-1].Time <= max_time || frist_task) {
-			log.Print("recipes[i].Divide[recipe_nums[i]-1].uid  ", recipes[i].Divide[recipe_nums[i]-1].Uid)
 			task_frame[0].Tejuns[priority] = Tejun{
 				Id:       recipes[i].Divide[recipe_nums[i]-1].Uid,
 				Name:     string(recipes[i].Divide[recipe_nums[i]-1].Displayname),
 				Time:     recipes[i].Divide[recipe_nums[i]-1].Time,
 				Parallel: recipes[i].Divide[recipe_nums[i]-1].Parallel,
 			}
-			log.Print(priority, "を追加")
 
 			recipe_nums[i]--
 
@@ -182,7 +173,6 @@ func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []
 				Parallel: true,
 			}
 		}
-		log.Print("")
 
 	}
 	frist_task = false
@@ -263,7 +253,6 @@ func chart_createtime(tasks []Task) ([]Task, error) {
 		// 各タスクの手順に対してループ
 		for _, tejun := range task.Tejuns {
 			// 手順が並行処理可能であり、次のタスクが存在する場合
-			log.Println(startTime)
 			if !(tejun.Parallel) && i < len(tasks)-1 {
 				startTime += tejun.Time          // 開始時間を更新
 				tasks[i + 1].StartTime = startTime // 次のタスクの開始時間を設定
