@@ -40,6 +40,7 @@ type Tejun struct {
 type RecipeCollection struct {
 	Recipes []ShortRecipe `json:"recipies"` // レシピのリスト
 	Tasks   []Task        `json:"tasks"`    // タスクのリスト
+	TotalTime int         `json:"totalTime"` // 累計時間
 }
 
 // ShortRecipe は簡略化されたレシピ情報を表します
@@ -112,16 +113,19 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 		}
 	}
 
-	new_tasks, err := chart_createtime(tasks)
+	new_tasks,totalTime, err := chart_createtime(tasks)
 
 	if err != nil {
 		return RecipeCollection{}, err
 	}
 
+
+
 	// タスクコレクションを生成
 	tasks_collection := RecipeCollection{
-		Recipes: simple_recipe,
-		Tasks:   new_tasks,
+		Recipes:   simple_recipe,
+		Tasks:     new_tasks,
+		TotalTime: totalTime,
 	}
 
 	return tasks_collection, nil // 生成したタスクを返す
@@ -175,6 +179,7 @@ func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []
 		}
 
 	}
+
 	frist_task = false
 	max_time = temp_time
 	return task_frame, location, max_time, nil
@@ -239,24 +244,29 @@ func chart_Priority(recipes []ShortRecipe) ([]string, error) {
 }
 
 // chart_createtime はタスクの時間を計算し、各タスクの開始時間を設定するメソッド
-func chart_createtime(tasks []Task) ([]Task, error) {
+func chart_createtime(tasks []Task) ([]Task,int, error) {
 	startTime := 0 // 現在の開始時間を保持
 
 	status := false // タスクが追加されたかどうかを示すフラグ
 
 	new_tasks := []Task{}
 
+	totaltime := 0
+
 
 	// 各タスクに対してループ
-	for i := 0; i < len(tasks); i++ {
-		task := tasks[i]
+	for i, task := range tasks  { 
 		// 各タスクの手順に対してループ
-		for _, tejun := range task.Tejuns {
-			// 手順が並行処理可能であり、次のタスクが存在する場合
+			for _, tejun := range task.Tejuns {
+			// 手順が並行処理不可能であり、次のタスクが存在する場合
 			if !(tejun.Parallel) && i < len(tasks)-1 {
 				startTime += tejun.Time          // 開始時間を更新
 				tasks[i + 1].StartTime = startTime // 次のタスクの開始時間を設定
 				status = true                    // タスクが追加されたことを示すフラグ
+			}
+
+			if i == len(tasks)-1 && totaltime < tejun.Time {
+				totaltime = tejun.Time
 			}
 		}
 
@@ -267,11 +277,11 @@ func chart_createtime(tasks []Task) ([]Task, error) {
 		}
 
 		// タスクの手順の中で最大の時間を見つける
-		temp := 0 // 一時的な時間を保持する変数
+		temptime := 0 // 一時的な時間を保持する変数
 		for _, tejun := range task.Tejuns {
-			if temp < tejun.Time { // 最大の手順時間を見つける
-				temp = tejun.Time
-				startTime += temp // 開始時間を加算
+			if temptime < tejun.Time { // 最大の手順時間を見つける
+				temptime = tejun.Time
+				startTime += temptime // 開始時間を加算
 				tasks[i + 1].StartTime = startTime
 			}
 		}
@@ -281,5 +291,8 @@ func chart_createtime(tasks []Task) ([]Task, error) {
 			Tejuns:    tasks[i].Tejuns, // 次のタスクの手順を設定
 		})
 	}
-	return new_tasks, nil // 新しいタスクリストを返す
+	
+	totaltime += startTime
+	
+	return new_tasks,totaltime, nil // 新しいタスクリストを返す
 }
