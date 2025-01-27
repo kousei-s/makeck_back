@@ -22,7 +22,7 @@ const (
 	// 下準備
 	Prepare = ProcessType("prepare")
 	// 仕上げ
-	Finish = ProcessType("finish")	
+	Finish = ProcessType("finish")
 )
 
 type Material struct {
@@ -251,15 +251,29 @@ func Debug() {
 		recipe4,
 	}
 
+	//材料を生成
+	materials, err := SearchMaterials(recipes)
+	if err != nil {
+		log.Println(err)
+	}
+
+	//JSON形式で出力に変更して出力
+	material_result, err := json.MarshalIndent(materials, "", "  ")
+	if err != nil {
+		log.Println(err)
+	}
+	log.Print(string(material_result))
+
+	// タスクを生成
 	chart, err := chart_Register(recipes)
 	if err != nil {
 		log.Println(err)
 	}
+
 	// JSON形式で出力に変更して出力
 	result, err := json.MarshalIndent(chart, "", "  ")
 	if err != nil {
 		log.Println(err)
 	}
-
 	log.Print(string(result))
 }
