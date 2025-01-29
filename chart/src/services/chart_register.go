@@ -40,7 +40,7 @@ type Tejun struct {
 type RecipeCollection struct {
 	Recipes []ShortRecipe `json:"recipies"` // レシピのリスト
 	Tasks   []Task        `json:"tasks"`    // タスクのリスト
-	TotalTime int         `json:"totalTime"` // 累計時間
+	TotalTime int         `json:"totaltime"` // 累計時間
 }
 
 // ShortRecipe は簡略化されたレシピ情報を表します
