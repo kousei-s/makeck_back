@@ -1,5 +1,7 @@
 package models
 
+import "gorm.io/gorm/clause"
+
 type LastSatate string
 
 const (
@@ -96,11 +98,17 @@ func GetRecipe(uid string) (Recipe, error) {
 	// 取得
 	result := dbconn.Where(&Recipe{
 		Uid: uid,
-	}).First(&data)
+	}).Preload(clause.Associations).First(&data)
 
 	return data, result.Error
 }
 
 func Recipe_Update(recipe Recipe) error {
 	return dbconn.Save(&recipe).Error
+}
+
+func Recipe_Delete(uid string) error {
+	return dbconn.Where(&Recipe{
+		Uid: uid,
+	}).Delete(&Recipe{}).Error
 }

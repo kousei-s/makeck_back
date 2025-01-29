@@ -4,6 +4,7 @@ import (
 	"log"
 	"recipe/controllers"
 	"recipe/models"
+	"recipe/recipe_rpc"
 
 	"github.com/joho/godotenv"
 )
@@ -31,4 +32,9 @@ func Init() {
 
 	// モデル初期化
 	models.Init()
+
+	// models.Recipe_Delete("747c94d3-32ed-488a-a975-9695504a2929")
+
+	// GRPCサーバーを起動
+	go recipe_rpc.RunServer()
 }

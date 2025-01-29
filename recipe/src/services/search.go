@@ -3,6 +3,7 @@ package services
 import (
 	"recipe/models"
 	"recipe/utils"
+	"strings"
 )
 
 type MatchRecipies struct {
@@ -63,7 +64,7 @@ func SearchByName(name string,category string) ([]MatchRecipies,error) {
 		result = append(result, MatchRecipies{
 			ID:    recipie.Uid,
 			Name:  recipie.Name,
-			Image: recipie.Image,
+			Image: strings.Replace(recipie.Image,"makeck.tail6cf7b.ts.net:8030","mattuu0mac.tail6cf7b.ts.net",1),
 		})
 	}
 
@@ -99,7 +100,7 @@ func SearchByCategory(category string) ([]MatchRecipies,error) {
 		result = append(result, MatchRecipies{
 			ID:    recipie.Uid,
 			Name:  recipie.Name,
-			Image: recipie.Image,
+			Image: strings.Replace(recipie.Image,"makeck.tail6cf7b.ts.net:8030","mattuu0mac.tail6cf7b.ts.net",1),
 		})
 	}
 

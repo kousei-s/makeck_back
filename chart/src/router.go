@@ -2,6 +2,7 @@ package main
 
 import (
 	// "chart/controllers"
+	"chart/controllers"
 	"chart/middlewares"
 	"net/http"
 
@@ -21,8 +22,7 @@ func InitServer() *echo.Echo {
 		return ctx.String(http.StatusOK, "Hello, World!")
 	},middlewares.PocketAuth())
 
-	// ガントチャート作成
-	
+	server.POST("/genchart", controllers.GenChart)
 	
 	return server
 }

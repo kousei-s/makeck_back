@@ -25,6 +25,7 @@ def CheckCreateCompose(project_name):
 
     container_dir = config['containers_dir']
     # ファイルが存在するか
+    container_dir = config['containers_dir']
     if os.path.exists(f"{container_dir}/{project_name}.yaml"):
         print("すでにファイルが存在します")
         # 存在する時
@@ -39,6 +40,7 @@ def CreateCompose(project_name, hostname):
 
     container_dir = config['containers_dir']
     # ファイルを生成する
+    container_dir = config['containers_dir']
     with open(f"{container_dir}/{project_name}.yaml", "w", encoding="utf-8") as writeCompose:
         writeCompose.write(f"""
 services:
@@ -56,8 +58,8 @@ def CheckNginxSetting(hostname):
     global config
 
     # ファイルが存在するか
-    nginx_conf_dir = config['nginx_conf_dir']
-    if os.path.exists(f"{nginx_conf_dir}/{hostname}.conf"):
+    container_dir = config['nginx_conf_dir']
+    if os.path.exists(f"{container_dir}/{hostname}.conf"):
         print("すでにファイルが存在します")
         # 存在する時
         sys.exit(1)
@@ -71,7 +73,8 @@ def CreateNginxSetting(hostname):
 
     nginx_conf_dir = config['nginx_conf_dir']
     # ファイルに書き込む
-    with open(f"{nginx_conf_dir}/{hostname}.conf", "w", encoding="utf-8") as writeNginx:
+    conf_dir = config['nginx_conf_dir']
+    with open(f"{conf_dir}/{hostname}.conf", "w", encoding="utf-8") as writeNginx:
         writeNginx.write("""
 location /REPLACEPENDPOINT/ {
     proxy_set_header Host $host;
@@ -270,9 +273,9 @@ def ListInput(inputdict: dict):
             print(f"{ikey}:{inputdict[ikey]}")
             show_list.append(str(inputdict[ikey]).lower())
 
+        show_data = ",".join(show_list)
         # 入力を受け取る
-        show_str = ",".join(show_list)
-        input_tag = input(f"項目を入力してください [{show_str}]>")
+        input_tag = input(f"項目を入力してください [{show_data}]>")
 
         if (input_tag.lower() in show_list):
             # 項目のバリデーションが成功した場合

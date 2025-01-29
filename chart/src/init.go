@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
 	"chart/controllers"
+	"chart/recipe_rpc"
+	"log"
 
 	"github.com/joho/godotenv"
 )
@@ -13,7 +14,7 @@ func loadEnv() {
 	// この読み込み処理がないと、個々の環境変数が取得出来ません。
 	// 読み込めなかったら err にエラーが入ります。
 	err := godotenv.Load(".env")
-	
+
 	// もし err がnilではないなら、"読み込み出来ませんでした"が出力されます。
 	if err != nil {
 		log.Fatalf("読み込み出来ませんでした: %v", err)
@@ -27,5 +28,7 @@ func Init() {
 
 	// コントローラー初期化
 	controllers.Init()
-	
+
+	// recipe_rpc 初期化
+	recipe_rpc.InitClient()
 }

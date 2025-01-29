@@ -184,6 +184,12 @@ func ConvertToProcess(args Step) (models.Process, error) {
 		return models.Process{}, err
 	}
 
+	// 手順の種類を変換する
+	Type, err := ConvertTypeToInt(args.Type)
+	if err != nil {
+		return models.Process{}, err
+	}
+
 	return models.Process{
 		Uid:         uid,
 		Name:        args.Name,
@@ -193,7 +199,23 @@ func ConvertToProcess(args Step) (models.Process, error) {
 		Material:    materials,
 		Recipeid:    "",
 		Description: args.Description,
+		Type:        Type,
 	}, nil
+}
+
+func ConvertTypeToInt(args string) (int, error) {
+	utils.Println(args)
+
+	switch args {
+	case "調理":
+		return int(models.CookProcess), nil
+	case "下準備":
+		return int(models.PrepareProcess), nil
+	case "仕上げ":
+		return int(models.FinishProcess), nil
+	default:
+		return -1, errors.New("invalid type")
+	}
 }
 
 func UploadImage(uid string, file *multipart.FileHeader) error {
