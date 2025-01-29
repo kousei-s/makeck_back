@@ -1,0 +1,68 @@
+syntax = "proto3";
+package recipe;
+
+option go_package = "../recipe_rpc";
+
+// LastStateの列挙型
+enum LastState {
+    HOT = 0;
+    REHEAT = 1;
+    COOL = 2;
+    NORMAL = 3;
+}
+
+// ProcessTypeの列挙型
+enum ProcessType {
+    COOK = 0;
+    PREPARE = 1;
+    FINISH = 2;
+}
+
+// 材料
+message Material {
+    string uid = 1; // 材料ID
+    string name = 2; // 材料名
+    int32 count = 3; // 個数
+    string unit = 4; // 単位
+}
+
+// レシピ
+message Recipe {
+    string uid = 1; // レシピID
+    string name = 2; // 料理名
+    string image = 3; // 画像パス
+    repeated Process process = 4; // 手順
+    LastState last_state = 5; // 最終状態
+}
+
+// 器具
+message Tools {
+    string uid = 1; // 器具ID
+    string name = 2; // 器具名
+    int32 count = 3; // 個数
+    string unit = 4; // 単位
+}
+
+// 手順
+message Process {
+    string uid = 1; // 手順ID
+    string name = 2; // 名前
+    string display_name = 3; // 表示名
+    string description = 4; // 説明
+    bool parallel = 5; // 平行可、不可
+    int32 time = 6; // 所要時間
+    repeated Tools tools = 7; // 必要器具
+    repeated Material material = 8; // 材料
+    string recipeid = 9; // レシピID
+    ProcessType type = 10; // 手順の種類
+}
+
+// サービスの定義
+service RecipeService {
+    rpc GetRecipe(RecipeRequest) returns (Recipe);
+}
+
+// リクエストとレスポンスメッセージ
+message RecipeRequest {
+    string uid = 1; // レシピID
+}

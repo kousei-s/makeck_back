@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"recipe/models"
+
 	// "recipe/services"
 	"recipe/utils"
 )
@@ -27,6 +28,7 @@ func DebugModel() {
 
 	//デバッグ実行
 	models.RunDebug()
+
 }
 
 func mainServer() {
