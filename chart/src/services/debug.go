@@ -195,6 +195,8 @@ func Debug() {
 		recipe4,
 	}
 
+	
+
 	chart, err := chart_Register(recipes)
 	if err != nil {
 		log.Println(err)

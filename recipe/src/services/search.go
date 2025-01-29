@@ -1,8 +1,11 @@
 package services
 
 import (
+	"fmt"
+	"net/url"
 	"recipe/models"
 	"recipe/utils"
+	"strings"
 )
 
 type MatchRecipies struct {
@@ -95,13 +98,38 @@ func SearchByCategory(category string) ([]MatchRecipies,error) {
 
 	result := []MatchRecipies{}
 	for _, recipie := range recipies {
+		// URLを置換
+		replaced,err := replaceURL(recipie.Image,"https://makeck.tail6cf7b.ts.net:8030","https://dev_makeck.mattuu.com")
+
+		// エラー処理
+		if err != nil {
+			return []MatchRecipies{},err
+		}
+
 		// 追加
 		result = append(result, MatchRecipies{
 			ID:    recipie.Uid,
 			Name:  recipie.Name,
-			Image: recipie.Image,
+			Image: replaced,
 		})
 	}
 
 	return result,nil
+}
+
+// URLを置換する関数
+func replaceURL(originalURL, oldBase, newBase string) (string, error) {
+	u, err := url.Parse(originalURL)
+	if err != nil {
+			return "", fmt.Errorf("URLのパースに失敗しました: %w", err)
+	}
+
+	// ホスト部分を比較
+	if !strings.HasPrefix(u.String(), oldBase){
+		return originalURL, nil
+	}
+
+	replacedURL := strings.Replace(originalURL, oldBase, newBase, 1)
+
+	return replacedURL, nil
 }
