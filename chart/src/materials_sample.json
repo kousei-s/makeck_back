@@ -1,0 +1,166 @@
+[
+    {
+      "id": "recipe1",
+      "name": "スパゲティ・ボロネーゼ",
+      "materials": [
+        {
+          "name": "ひき肉",
+          "quantity": 200,
+          "unit": "g"
+        },
+        {
+          "name": "玉ねぎ",
+          "quantity": 1,
+          "unit": "個"
+        },
+        {
+          "name": "にんじん",
+          "quantity": 1,
+          "unit": "本"
+        }
+      ]
+    },
+    {
+      "id": "recipe2",
+      "name": "チキンカレー",
+      "materials": [
+        {
+          "name": "ひき肉",
+          "quantity": 200,
+          "unit": "g"
+        },
+        {
+          "name": "玉ねぎ",
+          "quantity": 1,
+          "unit": "個"
+        },
+        {
+          "name": "にんじん",
+          "quantity": 1,
+          "unit": "本"
+        },
+        {
+          "name": "鶏肉",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "玉ねぎ",
+          "quantity": 1,
+          "unit": "個"
+        },
+        {
+          "name": "じゃがいも",
+          "quantity": 2,
+          "unit": "個"
+        }
+      ]
+    },
+    {
+      "id": "recipe3",
+      "name": "シーザーサラダ",
+      "materials": [
+        {
+          "name": "ひき肉",
+          "quantity": 200,
+          "unit": "g"
+        },
+        {
+          "name": "玉ねぎ",
+          "quantity": 1,
+          "unit": "個"
+        },
+        {
+          "name": "にんじん",
+          "quantity": 1,
+          "unit": "本"
+        },
+        {
+          "name": "鶏肉",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "玉ねぎ",
+          "quantity": 1,
+          "unit": "個"
+        },
+        {
+          "name": "じゃがいも",
+          "quantity": 2,
+          "unit": "個"
+        },
+        {
+          "name": "レタス",
+          "quantity": 1,
+          "unit": "個"
+        },
+        {
+          "name": "トマト",
+          "quantity": 2,
+          "unit": "個"
+        }
+      ]
+    },
+    {
+      "id": "recipe4",
+      "name": "フルーツポンチ",
+      "materials": [
+        {
+          "name": "ひき肉",
+          "quantity": 200,
+          "unit": "g"
+        },
+        {
+          "name": "玉ねぎ",
+          "quantity": 1,
+          "unit": "個"
+        },
+        {
+          "name": "にんじん",
+          "quantity": 1,
+          "unit": "本"
+        },
+        {
+          "name": "鶏肉",
+          "quantity": 300,
+          "unit": "g"
+        },
+        {
+          "name": "玉ねぎ",
+          "quantity": 1,
+          "unit": "個"
+        },
+        {
+          "name": "じゃがいも",
+          "quantity": 2,
+          "unit": "個"
+        },
+        {
+          "name": "レタス",
+          "quantity": 1,
+          "unit": "個"
+        },
+        {
+          "name": "トマト",
+          "quantity": 2,
+          "unit": "個"
+        },
+        {
+          "name": "イチゴ",
+          "quantity": 100,
+          "unit": "g"
+        },
+        {
+          "name": "キウイ",
+          "quantity": 2,
+          "unit": "個"
+        },
+        {
+          "name": "オレンジ",
+          "quantity": 1,
+          "unit": "個"
+        }
+      ]
+    }
+  ]

@@ -5,7 +5,63 @@ import (
 	"log"
 )
 
+type LastSatate string
 
+const (
+	Hot    = LastSatate("hot")
+	Reheat = LastSatate("reheat")
+	Cool   = LastSatate("cool")
+	Normal = LastSatate("normal")
+)
+
+type ProcessType string
+
+const (
+	// 調理
+	Cook = ProcessType("cook")
+	// 下準備
+	Prepare = ProcessType("prepare")
+	// 仕上げ
+	Finish = ProcessType("finish")
+)
+
+type Material struct {
+	Uid       string `gorm:"primaryKey"` //材料ID
+	Name      string //材料名
+	Count     int    //個数
+	Unit      string //単位
+	Processid string //手順と紐づけ
+}
+
+// レシピテーブルの構造体宣言
+type Recipe struct {
+	Uid       string     `gorm:"primaryKey"` //レシピID
+	Name      string     //料理名
+	Image     string     //画像パス
+	Process   []Process  `gorm:"foreignKey:recipeid"` //手順
+	LastState LastSatate //最終状態
+}
+
+type Tools struct {
+	Uid       string `gorm:"primaryKey"` //器具ID
+	Name      string //器具名
+	Count     int    //個数
+	Unit      string //単位
+	Processid string //手順と紐づけ
+}
+
+type Process struct {
+	Uid         string      `gorm:"primaryKey"` //手順ID
+	Name        string      //名前
+	Displayname string      //表示名
+	Description string      //説明
+	Parallel    bool        //平行可、不可
+	Time        int         //所要時間
+	Tools       []Tools     `gorm:"foreignKey:processid"` //必要器具
+	Material    []Material  `gorm:"foreignKey:processid"` //材料
+	Recipeid    string      //レシピと紐づけ
+	Type        ProcessType `json:"type"` // 手順の種類
+}
 
 func Debug() {
 	recipe1 := Recipe{
@@ -15,7 +71,7 @@ func Debug() {
 		LastState: Hot,
 		Process: []Process{
 			{
-				Uid:         "process1",
+				Uid:         "r1_process1",
 				Name:        "肉と野菜を切る",
 				Displayname: "下準備1",
 				Description: "玉ねぎを1個、ニンジンを1本,ひき肉を200g切る",
@@ -31,7 +87,7 @@ func Debug() {
 				Type:     Prepare,
 			},
 			{
-				Uid:         "process2",
+				Uid:         "r1_process2",
 				Name:        "材料を炒め、トマトソースを加えて煮込む。",
 				Displayname: "調理1",
 				Description: "下準備で切った肉と野菜をにトマトソースを400gいれ、30分煮込む",
@@ -52,7 +108,7 @@ func Debug() {
 		LastState: Hot,
 		Process: []Process{
 			{
-				Uid:         "process1",
+				Uid:         "r2_process1",
 				Name:        "鶏肉と野菜を切る",
 				Displayname: "下準備1",
 				Description: "玉ねぎを1個、じゃがいもを2個,鶏肉を300g切る",
@@ -68,7 +124,7 @@ func Debug() {
 				Type:     Prepare,
 			},
 			{
-				Uid:         "process2",
+				Uid:         "r2_process2",
 				Name:        "材料を炒めて、スパイスと水を加えて煮込む。",
 				Displayname: "調理1",
 				Description: "下準備で切った肉と野菜をにカレースパイスを1袋いれ、40分煮込む",
@@ -89,7 +145,7 @@ func Debug() {
 		LastState: Cool,
 		Process: []Process{
 			{
-				Uid:         "process1",
+				Uid:         "r3_process1",
 				Name:        "野菜を切る",
 				Displayname: "下準備1",
 				Description: "レタスを1個、トマトを2個切る",
@@ -104,7 +160,7 @@ func Debug() {
 				Type:     Prepare,
 			},
 			{
-				Uid:         "process2",
+				Uid:         "r3_process2",
 				Name:        "ドレッシングを作る",
 				Displayname: "下準備2",
 				Description: "下準備で切った野菜をにオリーブオイルを50ml、酢を20mlいれ、混ぜる",
@@ -119,7 +175,7 @@ func Debug() {
 				Type:     Prepare,
 			},
 			{
-				Uid:         "process3",
+				Uid:         "r3_process3",
 				Name:        "野菜とドレッシングを混ぜる",
 				Displayname: "調理1",
 				Description: "下準備で切った野菜とドレッシングを混ぜる",
@@ -135,7 +191,7 @@ func Debug() {
 				Type:     Cook,
 			},
 			{
-				Uid:         "process4",
+				Uid:         "r3_process4",
 				Name:        "盛り付け",
 				Displayname: "仕上げ",
 				Description: "サラダを皿に盛り付ける。",
@@ -158,7 +214,7 @@ func Debug() {
 		LastState: Cool,
 		Process: []Process{
 			{
-				Uid:         "process1",
+				Uid:         "r4_process1",
 				Name:        "果物を切る",
 				Displayname: "下準備1",
 				Description: "イチゴを100g、キウイを2個、オレンジを1個切る。",
@@ -174,7 +230,7 @@ func Debug() {
 				Type:     Prepare,
 			},
 			{
-				Uid:         "process2",
+				Uid:         "r4_process2",
 				Name:        "混ぜる",
 				Displayname: "調理1",
 				Description: "フルーツを混ぜて、ジュースを加える。",
@@ -195,15 +251,29 @@ func Debug() {
 		recipe4,
 	}
 
+	//材料を生成
+	materials, err := SearchMaterials(recipes)
+	if err != nil {
+		log.Println(err)
+	}
+
+	//JSON形式で出力に変更して出力
+	material_result, err := json.MarshalIndent(materials, "", "  ")
+	if err != nil {
+		log.Println(err)
+	}
+	log.Print(string(material_result))
+
+	// タスクを生成
 	chart, err := chart_Register(recipes)
 	if err != nil {
 		log.Println(err)
 	}
+
 	// JSON形式で出力に変更して出力
 	result, err := json.MarshalIndent(chart, "", "  ")
 	if err != nil {
 		log.Println(err)
 	}
-
 	log.Print(string(result))
 }
