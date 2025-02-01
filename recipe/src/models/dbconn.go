@@ -22,7 +22,7 @@ func Init() {
 	// グローバル変数に格納
 	dbconn = db
 
-	// // マイグレーション
+	// マイグレーション
 	db.AutoMigrate(&Recipe{})
 
 	// マイグレーション

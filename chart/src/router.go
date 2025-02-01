@@ -23,6 +23,8 @@ func InitServer() *echo.Echo {
 	},middlewares.PocketAuth())
 
 	server.POST("/genchart", controllers.GenChart)
-	
+
+	server.POST("/sermaterials", controllers.Sermaterials)
+
 	return server
 }

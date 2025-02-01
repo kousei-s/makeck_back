@@ -76,10 +76,10 @@ func recipeLastStateToLastState(lastState models.LastSatate) LastState {
 // model の material を gRPC の material に変換
 func recipeMaterialToMaterial(material models.Material) Material {
 	return Material{
-		Uid:           material.Uid,
-		Name:          material.Name,
-		Count:         int32(material.Count),
-		Unit:          material.Unit,
+		Uid:   material.Uid,
+		Name:  material.Name,
+		Count: int32(material.Count),
+		Unit:  material.Unit,
 	}
 }
 
@@ -87,9 +87,9 @@ func recipeMaterialToMaterial(material models.Material) Material {
 func recipeProcessToProcess(process models.Process) Process {
 	// tool を変換
 	tools := []*Tools{}
-	
+
 	// toolsを取得
-	getTools,err := process.GetTools()
+	getTools, err := process.GetTools()
 	if err != nil {
 		utils.Println(err)
 	}
@@ -104,7 +104,7 @@ func recipeProcessToProcess(process models.Process) Process {
 	materials := []*Material{}
 
 	// materialを取得
-	getMaterials,err := process.GetMaterials()
+	getMaterials, err := process.GetMaterials()
 	if err != nil {
 		utils.Println(err)
 	}

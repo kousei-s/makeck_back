@@ -23,7 +23,8 @@ func InitServer() *echo.Echo {
 	},middlewares.PocketAuth())
 
 	// レシピ名を登録するエンドポイント
-	server.POST("/register_recipe",controllers.RegisterRecipe,middlewares.PocketAuth())
+	server.POST("/register_recipe",controllers.RegisterRecipe ,middlewares.PocketAuth())
+	
 	// 画像をアップロードするエンドポイント
 	server.POST("/upload_image",controllers.UploadImage,middlewares.PocketAuth())
 

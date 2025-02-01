@@ -64,7 +64,7 @@ func SearchByName(name string,category string) ([]MatchRecipies,error) {
 		result = append(result, MatchRecipies{
 			ID:    recipie.Uid,
 			Name:  recipie.Name,
-			Image: strings.Replace(recipie.Image,"makeck.tail6cf7b.ts.net:8030","mattuu0mac.tail6cf7b.ts.net",1),
+			Image: strings.Replace(recipie.Image,"makeck.tail6cf7b.ts.net:8030","dev-makeck.mattuu.com",1),
 		})
 	}
 
@@ -100,7 +100,7 @@ func SearchByCategory(category string) ([]MatchRecipies,error) {
 		result = append(result, MatchRecipies{
 			ID:    recipie.Uid,
 			Name:  recipie.Name,
-			Image: strings.Replace(recipie.Image,"makeck.tail6cf7b.ts.net:8030","mattuu0mac.tail6cf7b.ts.net",1),
+			Image: strings.Replace(recipie.Image,"makeck.tail6cf7b.ts.net:8030","dev-makeck.mattuu.com",1),
 		})
 	}
 
