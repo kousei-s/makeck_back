@@ -42,6 +42,8 @@ func InitServer() *echo.Echo {
 
 	// 手順の詳細を取得するエンドポイント
 	server.GET("/:id",controllers.GetProcess)
+
+	server.POST("/debugRecipes",controllers.DebugRecipes,middlewares.PocketAuth())
 	
 	return server
 }

@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/labstack/echo/v5"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	// "github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/models"
+	// "github.com/pocketbase/pocketbase/models"
 )
 
 // ユーザーデータ (トークンで返すやつ)
@@ -34,122 +35,148 @@ func main() {
 	app := pocketbase.New()
 
 	// ユーザー認証
-	app.OnBeforeServe().Add(func(evt *core.ServeEvent) error {
+	app.OnServe().BindFunc(func(evt *core.ServeEvent) error {
+		// api group
 		// ユーザーを認証する関数
-		evt.Router.AddRoute(echo.Route{
-			Method: http.MethodPost,
-			Path:   "/jwt",
-			Handler: func(ctx echo.Context) error {
-				// ユーザー取得
-				user := ctx.Get(apis.ContextAuthRecordKey).(*models.Record)
+		evt.Router.POST("/jwt", func(evt *core.RequestEvent) error {
+			// ユーザー取得
+			info, err := evt.RequestInfo()
 
-				// 認証プロバイダの情報取得
-				records, err := app.Dao().FindAllExternalAuthsByRecord(user)
-
-				// エラー処理
-				if err != nil {
-					log.Println(err)
-				}
-
-				// 最初のレコード取得
-				provider := records[0]
-
-				// 返すデータ
-				return_data := UserData{
-					UserID:      user.Id,
-					UserName:    user.Username(),
-					Email:       user.Email(),
-					Labels:      []string{},
-					ProviderUID: provider.ProviderId,
-					Provider:    provider.Provider,
-					Created:     user.GetCreated().Time(),
-					Updated:     user.GetUpdated().Time(),
-				}
-
-				return ctx.JSON(http.StatusOK, echo.Map{
-					"result": return_data,
+			// エラー処理
+			if err != nil {
+				app.Logger().Error("error",err)
+				return evt.Error(http.StatusInternalServerError, "something went wrong", map[string]validation.Error{
+					"title": validation.NewError("message", "failed to get auth"),
 				})
-			},
-			Middlewares: []echo.MiddlewareFunc{
-				apis.ActivityLogger(app),
-				apis.RequireRecordAuth("users"),
-			},
-		})
+			}
 
-		evt.Router.AddRoute(echo.Route{
-			Method: http.MethodGet,
-			Path:   "/info/:userid",
-			Handler: func(ctx echo.Context) error {
-				// 画像を取得するコレクション
-				targetCollection := "_pb_users_auth_"
+			authRecord := info.Auth
 
-				// ユーザーID取得
-				userid := ctx.PathParam("userid")
+			// 認証プロバイダの情報取得
+			records,err := app.FindAllExternalAuthsByRecord(authRecord)
 
-				// ユーザーを取得する
-				user, err := app.Dao().FindRecordById(targetCollection, userid)
-
-				// エラー処理
-				if err != nil {
-					log.Println(err)
-					return ctx.JSON(http.StatusInternalServerError, echo.Map{
-						"result": "Failed to get user",
-					})
-				}
-
-				return ctx.JSON(http.StatusOK, echo.Map{
-					"result": UserInfo{
-						UserName: user.Username(),
-						Labels:   []string{},
-					},
+			// エラー処理
+			if err != nil {
+				app.Logger().Error("error",err)
+				return evt.Error(http.StatusInternalServerError, "something went wrong", map[string]validation.Error{
+					"title": validation.NewError("message", "failed to get auth"),
 				})
-			},
-			Middlewares: []echo.MiddlewareFunc{
-				apis.ActivityLogger(app),
-			},
+			}
+
+			// ラベルのIDを取得する
+			labels := authRecord.Get("labels").([]string)
+
+			// ラベルの文字列取得
+			return_labels := GetLabels(app,labels)
+			
+			// 認証プロバイダの情報を取得
+			provider := records[0]
+
+			// 返すデータ
+			return_data := UserData{
+				UserID:      authRecord.Id,
+				UserName:    authRecord.GetString("name"),
+				Email:       authRecord.GetString("email"),
+				Labels:      return_labels,
+				ProviderUID: provider.ProviderId(),
+				Provider:    provider.Provider(),
+				Created:     authRecord.GetDateTime("created").Time(),
+				Updated:     authRecord.GetDateTime("updated").Time(),
+			}
+
+			return evt.JSON(http.StatusOK, map[string]UserData{"result": return_data})
+			
+		}).Bind(apis.RequireAuth("users"))
+
+		evt.Router.GET("/icon/{userid}",func(evt *core.RequestEvent) error {
+			// 画像を取得するコレクション
+			targetCollection := "_pb_users_auth_"
+
+			// ユーザーID取得
+			userid := evt.Request.PathValue("userid")
+			
+			// ユーザーを取得する
+			user, err := app.FindRecordById(targetCollection, userid)
+
+			// エラー処理
+			if err != nil {
+				app.Logger().Error("error",err)
+				return evt.JSON(http.StatusInternalServerError, map[string]string{
+					"result": "Failed to get user",
+				})
+			}
+
+			// アバターのURL
+			avatar := app.Settings().Meta.AppURL + "/api/files/" + user.Collection().Id + "/" + user.Id + "/" + user.GetString("avatar")
+
+			return evt.Redirect(http.StatusTemporaryRedirect, avatar)
 		})
 
-		evt.Router.AddRoute(echo.Route{
-			Method: http.MethodGet,
-			Path:   "/icon/:userid",
-			Handler: func(ctx echo.Context) error {
-				// 画像を取得するコレクション
-				targetCollection := "_pb_users_auth_"
+		evt.Router.GET("/info/{userid}",func(evt *core.RequestEvent) error {
+			// 画像を取得するコレクション
+			targetCollection := "_pb_users_auth_"
 
-				// ユーザーID取得
-				userid := ctx.PathParam("userid")
+			// ユーザーID取得
+			userid := evt.Request.PathValue("userid")
+			
+			// ユーザーを取得する
+			user, err := app.FindRecordById(targetCollection, userid)
 
-				// ユーザーを取得する
-				user, err := app.Dao().FindRecordById(targetCollection, userid)
+			// エラー処理
+			if err != nil {
+				app.Logger().Error("error",err)
+				return evt.JSON(http.StatusInternalServerError, map[string]string{
+					"result": "Failed to get user",
+				})
+			}
 
-				// エラー処理
-				if err != nil {
-					log.Println(err)
-					return ctx.JSON(http.StatusInternalServerError, echo.Map{
-						"result": "Failed to get user",
-					})
-				}
+			// ラベルのIDを取得する
+			labels := user.Get("labels").([]string)
 
-				// アバターのURL
-				avatar := app.Settings().Meta.AppUrl + "/api/files/" + user.Collection().Id + "/" + user.Id + "/" + user.GetString("avatar")
+			// ラベルの文字列取得
+			return_labels := GetLabels(app,labels)
 
-				return ctx.Redirect(http.StatusTemporaryRedirect, avatar)
-			},
-			Middlewares: []echo.MiddlewareFunc{
-				apis.ActivityLogger(app),
-			},
+			return evt.JSON(http.StatusOK,map[string]UserInfo{
+				"result" : {
+					UserName: user.GetString("name"),
+					Labels:   return_labels,
+				},
+			})
 		})
 
-		return nil
+		return evt.Next()
 	})
 
-	// ラベルを生成
-	CreateCollection(app)
-
-	// 設定のフックをインストール
+	// 設定フックする
 	InstallHook(app)
 
+	// コレクション作成
+	CreateCollection(app)
+
+	// 起動
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func GetLabels(app *pocketbase.PocketBase,labels []string) ([]string) {
+	// 返すラベル
+	return_labels := []string{}
+
+	// ラベルを回す
+	for _, val := range labels {
+		// ラベルを取得する
+		label, err := app.FindRecordById("Label", val)
+
+		// エラー処理
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
+		// ラベルを追加
+		return_labels = append(return_labels, label.GetString("name"))
+	}
+
+	return return_labels
 }

@@ -1,0 +1,31 @@
+func(ctx echo.Context) error {
+			// ユーザー取得
+			user := ctx.Get(apis.ContextAuthRecordKey).(*models.Record)
+
+			// 認証プロバイダの情報取得
+			records, err := app.Dao().FindAllExternalAuthsByRecord(user)
+
+			// エラー処理
+			if err != nil {
+				log.Println(err)
+			}
+
+			// 最初のレコード取得
+			provider := records[0]
+
+			// 返すデータ
+			return_data := UserData{
+				UserID:      user.Id,
+				UserName:    user.Username(),
+				Email:       user.Email(),
+				Labels:      []string{},
+				ProviderUID: provider.ProviderId,
+				Provider:    provider.Provider,
+				Created:     user.GetCreated().Time(),
+				Updated:     user.GetUpdated().Time(),
+			}
+
+			return ctx.JSON(http.StatusOK, echo.Map{
+				"result": return_data,
+			})
+		})
