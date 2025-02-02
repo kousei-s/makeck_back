@@ -81,12 +81,31 @@ func RpcProcessToProcess(process recipe_rpc.Process) (Process, error) {
 		Description: process.Description,
 		Parallel:    process.Parallel,
 		Time:        int(process.Time),
+		Material:    RpcMaterialsToMaterials(process.Material),
 		// Tools:       process.Tools,
 		// Material:    process.Material,
 		Recipeid: process.Recipeid,
 		Type:     RpcTypeToProcessType(process.Type),
 	}, nil
 }
+
+func RpcMaterialsToMaterials(materials []*recipe_rpc.Material) []Material {
+	// 材料を変換
+	materialsList := []Material{}	
+
+	for _, material := range materials {
+		materialsList = append(materialsList, Material{
+			Uid:       material.Uid,
+			Name:      material.Name,
+			Count:     int(material.Count),
+			Unit:      material.Unit,
+			Processid: "",
+		})
+	}
+
+	return materialsList
+}
+
 
 func RpcTypeToProcessType(processType recipe_rpc.ProcessType) ProcessType {
 	if processType == recipe_rpc.ProcessType_COOK {

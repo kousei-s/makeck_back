@@ -36,7 +36,7 @@ func Sermaterials(ctx echo.Context) error {
 	}
 
 	//材料表作成
-	materialData,err := services.GenChart(services.RecipeArgs{
+	materialData,err := services.GetMaterial(services.RecipeArgs{
 		Recipes: chart.RecipeIds,
 	})
 	

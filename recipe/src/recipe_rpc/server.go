@@ -50,7 +50,8 @@ func (rserver *RecipeServer) GetRecipe(ctx context.Context, req *RecipeRequest) 
 	for _, val := range recipe.Process {
 		process := recipeProcessToProcess(val)
 		processes = append(processes, &process)
-		utils.Println(process.Tools)
+		// utils.Println(process.Tools)
+		utils.Println(process.Material)
 	}
 
 	return &Recipe{

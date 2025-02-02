@@ -9,8 +9,7 @@ type RecipeArgs struct {
 }
 
 func GenChart(args RecipeArgs) (RecipeCollection, error) {
-	
-	convertedRecipes,err :=converter(args)
+	convertedRecipes,err := converter(args)
 	if err != nil {
 		return RecipeCollection{}, err
 	}
