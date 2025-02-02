@@ -43,7 +43,11 @@ func InitServer() *echo.Echo {
 	// 手順の詳細を取得するエンドポイント
 	server.GET("/:id",controllers.GetProcess)
 
+	// デバッグ用にレシピを取得する
 	server.POST("/debugRecipes",controllers.DebugRecipes,middlewares.PocketAuth())
+
+	// デバッグ用にレシピを削除する
+	server.POST("/debugDeleteRecipe",controllers.DebugDeleteRecipe,middlewares.PocketAuth())
 	
 	return server
 }

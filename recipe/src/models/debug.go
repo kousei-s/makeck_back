@@ -1,7 +1,10 @@
 package models
 
 import (
+	"os"
 	"recipe/utils"
+
+	"gorm.io/gorm/clause"
 )
 
 var parallelt = true
@@ -176,4 +179,38 @@ func registration(name1 string, name2 string, name3 string, name4 string, name5 
 	}
 	utils.Println(recipe)
 
+}
+
+// 全レシピ取得
+func GetAllRecipes() ([]Recipe, error) {
+	recipies := []Recipe{}
+
+	// 全レシピ取得
+	err := dbconn.Preload(clause.Associations).Find(&recipies)
+	if err != nil {
+		utils.Println(err)
+	}
+
+	return recipies, nil
+}
+
+func DeleteRecipe(id string) error {
+	// レシピを取得
+	recipe, err := GetRecipe(id)
+	if err != nil {
+		return err
+	}
+
+	// レシピを削除する
+	err = dbconn.Unscoped().Delete(&recipe).Error
+
+	// エラー処理
+	if err != nil {
+		return err
+	}
+
+	// 画像を削除する
+	err = os.Remove(recipe.Image)
+
+	return err
 }

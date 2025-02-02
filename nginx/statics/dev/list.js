@@ -1,5 +1,5 @@
 // サンプルデータを作成
-const recipes = [
+let recipes = [
     { id: 1, name: "カレー", type: "主食", image: "https://example.com/curry.jpg", status: "完成" },
     { id: 2, name: "サラダ", type: "副菜", image: "https://example.com/salad.jpg", status: "完成" }
 ];
@@ -18,6 +18,8 @@ async function displayRecipes() {
 
     const res = await req.json();
     console.log(res);
+
+    recipes = res["recipes"];
 
     const recipeList = document.getElementById('recipe-list');
     recipeList.innerHTML = ''; // リストをクリア
@@ -52,7 +54,22 @@ async function displayRecipes() {
             if (index > -1) {
                 const removedId = recipe.id; // 削除するレシピのIDを取得
                 recipes.splice(index, 1); // レシピを削除
-                console.log(`レシピ ${removedId} を削除しました`);
+
+                // レシピを削除
+                const authData = await GetSession();
+                const req = await fetch('/recipe/debugDeleteRecipe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': authData['token'],
+                        "recipeId": removedId
+                    },
+                    // body: JSON.stringify({ id: removedId }) // 削除するレシピのIDを送信
+                });
+
+                const res = await req.json();
+                console.log(res);
+
                 await displayRecipes(); // リストを再表示
             }
         });
