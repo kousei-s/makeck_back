@@ -1,6 +1,8 @@
 package services
 
-import "log"
+import (
+
+)
 
 // Recipe はレシピ情報を表します
 type Recipes struct {
@@ -89,7 +91,7 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 	max_times := 0
 
 	//最初のタスクのだけtrue
-	first_task := true
+	frist_task := true
 	for {
 		// タスクの横列を一つ生成
 		task_frame := []Task{
@@ -97,14 +99,11 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 				Tejuns: make(map[string]Tejun), // 手順情報のマップを初期化
 			},
 		}
-		log.Println(first_task)
-
 		// 優先度に基づいてタスクを生成
-		task, locations, max_time,first, err := chart_CreateTask(simple_recipe, prioritys_recepi, recipe_nums, task_frame, location, max_times, first_task) // Task型を取得
+		task, locations, max_time, err := chart_CreateTask(simple_recipe, prioritys_recepi, recipe_nums, task_frame, location, max_times, frist_task) // Task型を取得
 		if err != nil {
 			return RecipeCollection{}, err
 		}
-		first_task = first
 		max_times += max_time
 		tasks = append(task, tasks...) // タスクを追加
 		location = locations
@@ -133,7 +132,7 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 }
 
 // chart_CreateTask は優先度に基づいて横一列のタスクを作成するメソッド
-func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []int, task_frame []Task, location int, max_time int, first_task bool) ([]Task, int, int,bool, error) {
+func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []int, task_frame []Task, location int, max_time int, frist_task bool) ([]Task, int, int, error) {
 	task_bool := true
 	//順番を前回のタスクにする
 	new_list := priorities[location:]
@@ -149,22 +148,10 @@ func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []
 	}
 
 	temp_time := max_time
-	first_time := 0
 	for i, priority := range new_list {
 		i += location
 		i %= len(recipes)
-		if task_bool && recipe_nums[i] > 0 && (recipes[i].Divide[recipe_nums[i]-1].Time <= max_time || first_task) {			
-			if first_task {
-				if first_time == 0 {
-					first_time = recipes[i].Divide[recipe_nums[i]-1].Time
-				}else if first_time < recipes[i].Divide[recipe_nums[i]-1].Time {
-					task_frame[0].Tejuns[priority] = Tejun{
-						Parallel: true,
-					}
-					continue
-				}
-			}
-			
+		if task_bool && recipe_nums[i] > 0 && (recipes[i].Divide[recipe_nums[i]-1].Time >= max_time || frist_task) {
 			task_frame[0].Tejuns[priority] = Tejun{
 				Id:       recipes[i].Divide[recipe_nums[i]-1].Uid,
 				Name:     string(recipes[i].Divide[recipe_nums[i]-1].Displayname),
@@ -193,10 +180,9 @@ func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []
 
 	}
 
-	first_task = false
+	frist_task = false
 	max_time = temp_time
-
-	return task_frame, location, max_time,first_task,nil
+	return task_frame, location, max_time, nil
 }
 
 // chart_Extraction はレシピから必要な情報を抽出するメソッド
