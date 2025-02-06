@@ -210,7 +210,7 @@ func DeleteRecipe(id string) error {
 	}
 
 	// 画像を削除する
-	err = os.Remove(recipe.Image)
+	err = os.Remove("./images/" + recipe.Uid + ".jpg")
 
 	return err
 }

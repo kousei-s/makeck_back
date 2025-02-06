@@ -24,3 +24,11 @@ button.delete {
     padding: 5px 10px;
     cursor: pointer;
 }
+
+button.edit {
+    background-color: rgb(42, 134, 233);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}

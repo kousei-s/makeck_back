@@ -106,6 +106,173 @@ func RegisterRecipe(args Recipe) (string, HttpResult) {
 	return uid, HttpResult{Code: http.StatusOK, Msg: "success", Err: nil}
 }
 
+// レシピを更新する
+func UpdateRecipe(targetUid string,args Recipe) (string, HttpResult) {
+	// レシピを削除する
+	err := models.DeleteRecipe(targetUid)
+	if err != nil {
+		return "", HttpResult{Code: http.StatusBadRequest, Msg: err.Error(), Err: err}
+	}
+
+	procescc := []models.Process{}
+
+	// step を手順に変換する
+	for _, val := range args.Steps {
+		// レシピを登録する
+		process, err := ConvertToProcess(val)
+		if err != nil {
+			return "", HttpResult{Code: http.StatusBadRequest, Msg: err.Error(), Err: err}
+		}
+
+		procescc = append(procescc, process)
+	}
+
+	// カテゴリを変換する
+	categoryId, err := ConvertToCategory(args.RecipeCategory)
+
+	// エラー処理
+	if err != nil {
+		return "", HttpResult{Code: http.StatusBadRequest, Msg: err.Error(), Err: err}
+	}
+
+	// レシピIDを生成
+	uid, err := utils.Genid()
+	if err != nil {
+		return "", HttpResult{Code: http.StatusInternalServerError, Err: err, Msg: err.Error()}
+	}
+
+	utils.Println(args)
+
+	// 新しいレシピを作成
+	_, err = models.Recipe_Register(models.RecipeArgs{
+		Uid:   uid,
+		Name:  args.RecipeName,
+		Image: "NoImage",
+		Category: []models.Category{
+			{
+				Id: categoryId,
+			},
+		},
+		Prosecc:    procescc,
+		LastSatate: models.LastSatate(args.FinalState),
+	})
+
+	// エラー処理
+	if err != nil {
+		return "", HttpResult{Code: http.StatusInternalServerError, Err: err, Msg: err.Error()}
+	}
+
+	return uid, HttpResult{Code: http.StatusOK, Msg: "success", Err: nil}
+}
+
+func RestoreRecipe(recipeId string) (Recipe, HttpResult) {
+	// データベースからレシピを取得する
+	recipe, err := models.GetRecipe(recipeId)
+
+	// エラー処理
+	if err != nil {
+		return Recipe{}, HttpResult{Code: http.StatusInternalServerError, Err: err, Msg: err.Error()}
+	}
+
+	// 手順リスト
+	steps := []Step{}
+
+
+	// 手順を変換する
+	for _, val := range recipe.Process {
+		utils.Println(val)
+
+		// 材料を取得
+		gmaterials, err := val.GetMaterials()
+		if err != nil {
+			return Recipe{}, HttpResult{Code: http.StatusInternalServerError, Err: err, Msg: err.Error()}
+		}
+
+		// 材料を変換する
+		materials := []Ingredient{}
+		for _, val := range gmaterials {
+			// 材料を変換
+			material := Ingredient{
+				Name:     val.Name,
+				Quantity: val.Count,
+				Unit:     val.Unit,
+			}
+			materials = append(materials, material)
+		}
+
+		// 器具を取得
+		gtools, err := val.GetTools()
+		if err != nil {
+			return Recipe{}, HttpResult{Code: http.StatusInternalServerError, Err: err, Msg: err.Error()}
+		}
+
+		// 器具を変換
+		tools := []Utensil{}
+		for _, val := range gtools {
+			// 器具を変換
+			tool := Utensil{
+				Name:     val.Name,
+				Quantity: val.Count,
+				Unit:     val.Unit,
+			}
+			tools = append(tools, tool)
+		}
+
+		// 手順を変換
+		step := Step{
+			Name:        val.Name,
+			Time:        int(val.Time),
+			Concurrent:  modelConcurrentToRecipeConcurrent(val.Parallel),
+			Ingredients: materials,
+			Utensils:    tools,
+			Type:        modelTypeToRecipeType(int(val.Type)),
+			Description: val.Description,
+		}
+
+		steps = append(steps, step)
+	}
+
+	// レシピを返す
+	return_recipe := Recipe{
+		RecipeName:     recipe.Name,
+		Steps:          steps,
+		RecipeCategory: recipe.Category[0].Name,
+		FinalState:     modelLastStateToRecipeLastState(recipe.LastState),
+	}
+
+	return return_recipe, HttpResult{Code: http.StatusOK, Msg: "success", Err: nil}
+}
+
+func modelLastStateToRecipeLastState(lastState models.LastSatate) string {
+	if lastState == models.Hot {
+		return "Hot"
+	} else if lastState == models.Cool {
+		return "Cool"
+	} else {
+		return "Normal"
+	}
+}
+
+func modelConcurrentToRecipeConcurrent(isConcurrent bool) string {
+	if isConcurrent {
+		return "可"
+	} else {
+		return "不可"
+	}
+}
+
+func modelTypeToRecipeType(recipeType int) string {
+	if recipeType == int(models.CookProcess) {
+		return "調理"
+	} else if recipeType == int(models.PrepareProcess) {
+		return "下準備"
+	} else if recipeType == int(models.FinishProcess) {
+		return "仕上げ"
+	} else {
+		return "不明"
+	}
+}
+
 func resizeImage(src image.Image, width, height int) image.Image {
 	dst := image.NewRGBA(image.Rect(0, 0, width, height))
 	draw.Draw(dst, dst.Bounds(), &image.Uniform{color.White}, image.Point{}, draw.Src)
@@ -230,7 +397,7 @@ func UploadImage(uid string, file *multipart.FileHeader) error {
 		return errors.New("Image already exists")
 	}
 
-	recipe.Image = "https://makeck.tail6cf7b.ts.net:8030/recipe/images/" + uid + ".jpg"
+	recipe.Image = "https://dev-makeck.mattuu.com//recipe/images/" + uid + ".jpg"
 
 	// レシピを更新する
 	if err := models.Recipe_Update(recipe); err != nil {

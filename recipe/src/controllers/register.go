@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"net/http"
+	"recipe/middlewares"
 	"recipe/services"
 	"recipe/utils"
+	"slices"
 
 	"github.com/labstack/echo/v4"
 )
@@ -32,6 +34,65 @@ func RegisterRecipe(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, echo.Map{
 		"result": uid,
+	})
+}
+
+func UpdateRecipe(ctx echo.Context) error {
+	// ユーザーを取得する
+    user := ctx.Get("user").(middlewares.UserData)
+
+    // admin じゃない場合
+    if slices.Contains(user.Labels, "admin") == false {
+        return ctx.JSON(http.StatusForbidden, map[string]interface{}{
+            "error": "forbidden",
+        })
+    }
+
+	// json を受け取る
+	var val services.Recipe
+	err := ctx.Bind(&val)
+
+	// エラー処理
+	if err != nil {
+		utils.Println(err)
+		return ctx.JSON(http.StatusBadRequest, echo.Map{
+			"result": "failed",
+		})
+	}
+
+	// uid を取得
+	targetUid := ctx.Request().Header.Get("recipeId")
+
+	// サービスを呼び出す
+	uid, herr := services.UpdateRecipe(targetUid,val)
+
+	// エラー処理
+	if herr.Err != nil {
+		utils.Println("failed to register recipe : " + herr.Error())
+		return ctx.JSON(http.StatusBadRequest, echo.Map{})
+	}
+
+	return ctx.JSON(http.StatusOK, echo.Map{
+		"result": uid,
+	})
+}
+
+func RestoreRecipe(ctx echo.Context) error {
+	// uid を取得
+	uid := ctx.Request().Header.Get("uid")
+
+	// サービスを呼び出す
+	recipie, herr := services.RestoreRecipe(uid)
+
+	// エラー処理
+	if herr.Err != nil {
+		return ctx.JSON(http.StatusBadRequest, echo.Map{
+			"error": herr.Error(),
+		})
+	}
+
+	return ctx.JSON(http.StatusOK, echo.Map{
+		"result": recipie,
 	})
 }
 

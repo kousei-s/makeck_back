@@ -1,6 +1,9 @@
 package services
 
-import "recipe/models"
+import (
+	"recipe/models"
+	"strings"
+)
 
 type ReturnRecipe struct {
 	Uid         string	`json:"id"`
@@ -26,7 +29,7 @@ func DebugRecipes() ([]ReturnRecipe, error) {
 			Uid:         val.Uid,
 			Name:        val.Name,
 			Category:    recipeCategorysToString(val.Category),
-			Image:       val.Image,
+			Image:       strings.Replace(val.Image,"makeck.tail6cf7b.ts.net:8030","dev-makeck.mattuu.com",1),
 			LastState:   string(val.LastState),
 		})
 	}

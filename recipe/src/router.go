@@ -22,8 +22,14 @@ func InitServer() *echo.Echo {
 		return ctx.String(http.StatusOK, "Hello, World!")
 	},middlewares.PocketAuth())
 
-	// レシピ名を登録するエンドポイント
+	// レシピを登録するエンドポイント
 	server.POST("/register_recipe",controllers.RegisterRecipe ,middlewares.PocketAuth())
+
+	// レシピを更新するエンドポイント
+	server.POST("/update_recipe",controllers.UpdateRecipe ,middlewares.PocketAuth())
+
+	// 登録済みレシピを戻すエンドポイント
+	server.GET("/restore_recipe",controllers.RestoreRecipe,middlewares.PocketAuth())
 	
 	// 画像をアップロードするエンドポイント
 	server.POST("/upload_image",controllers.UploadImage,middlewares.PocketAuth())

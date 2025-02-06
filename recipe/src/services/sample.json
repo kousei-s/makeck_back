@@ -1,0 +1,80 @@
+{
+    "recipeCategory": "主食",
+    "recipeName": "みたらし団子",
+    "finalState": "Hot",
+    "steps": [
+        {
+            "name": "手順1",
+            "time": 10,
+            "type": "下準備",
+            "concurrent": "可",
+            "ingredients": [
+                {
+                    "name": "団子",
+                    "quantity": 2,
+                    "unit": "個"
+                }
+            ],
+            "utensils": [
+                {
+                    "name": "フライパン",
+                    "quantity": 1,
+                    "unit": "個"
+                }
+            ],
+            "description": "フライパンに油をひいて団子を並べる"
+        },
+        {
+            "name": "手順2",
+            "time": 5,
+            "type": "調理",
+            "concurrent": "不可",
+            "ingredients": [
+                {
+                    "name": "みたらしソース",
+                    "quantity": 2,
+                    "unit": "大匙"
+                },
+                {
+                    "name": "砂糖",
+                    "quantity": 1,
+                    "unit": "大匙"
+                },
+                {
+                    "name": "醤油",
+                    "quantity": 1,
+                    "unit": "大匙"
+                }
+            ],
+            "utensils": [
+                {
+                    "name": "鍋",
+                    "quantity": 1,
+                    "unit": "個"
+                }
+            ],
+            "description": "みたらしソース、砂糖、醤油を混ぜて火にかける"
+        },
+        {
+            "name": "手順3",
+            "time": 3,
+            "type": "仕上げ",
+            "concurrent": "不可",
+            "ingredients": [
+                {
+                    "name": "団子",
+                    "quantity": 2,
+                    "unit": "個"
+                }
+            ],
+            "utensils": [
+                {
+                    "name": "箸",
+                    "quantity": 1,
+                    "unit": "本"
+                }
+            ],
+            "description": "団子をソースに漬ける"
+        }
+    ]
+}
