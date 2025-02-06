@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         saveDraft();
 
         //TODO 送信処理を書く
-        console.log(localStorage.getItem("recipeDraft"));
+        console.log(localStorage.getItem("recipeDraft_edit"));
 
         // トークン取得
         const authData = await GetSession();
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 "Content-Type": "application/json",
                 "Authorization" : authData["token"],
             },
-            body : localStorage.getItem("recipeDraft")
+            body : localStorage.getItem("recipeDraft_edit")
         });
 
         // 結果を取得
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = "./process_edit.html?uid=" + result["result"];
 
         // 下書きを削除
-        // localStorage.removeItem('recipeDraft');
+        // localStorage.removeItem('recipeDraft_edit');
     });
 });
 
@@ -200,11 +200,11 @@ function saveDraft() {
     });
 
     const draft = { recipeCategory, recipeName, finalState, steps }; // 最終状態を含める
-    localStorage.setItem('recipeDraft', JSON.stringify(draft)); // 下書きを保存
+    localStorage.setItem('recipeDraft_edit', JSON.stringify(draft)); // 下書きを保存
 }
 
 function loadDraft() {
-    const draft = JSON.parse(localStorage.getItem('recipeDraft'));
+    const draft = JSON.parse(localStorage.getItem('recipeDraft_edit'));
     if (draft) {
         document.getElementById('recipeCategory').value = draft.recipeCategory || ""; // 料理の項目
         document.getElementById('recipeName').value = draft.recipeName || "";
@@ -278,7 +278,7 @@ extractButton.addEventListener('click', async () => {
         });
 
         const res = await req.json();
-        localStorage.setItem('recipeDraft', res["result"]); // 下書きを保存 (res["result"]);
+        localStorage.setItem('recipeDraft_edit', res["result"]); // 下書きを保存 (res["result"]);
         // reload
         location.reload();
     } catch (ex) {

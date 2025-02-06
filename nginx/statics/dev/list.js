@@ -69,7 +69,7 @@ async function displayRecipes() {
                 });
 
                 const res = await req.json();
-                window.localStorage.setItem("recipeDraft2", JSON.stringify(res["result"]));
+                window.localStorage.setItem("recipeDraft_edit", JSON.stringify(res["result"]));
                 console.log(res);
 
                 // 新しいウィンドウで編集画面を開く
