@@ -73,6 +73,8 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 		return RecipeCollection{}, err
 	}
 
+	log.Println("優先順",prioritys_recepi)
+
 	tasks := []Task{}
 
 	recipe_nums := []int{
@@ -97,7 +99,6 @@ func chart_Register(recipes []Recipe) (RecipeCollection, error) {
 				Tejuns: make(map[string]Tejun), // 手順情報のマップを初期化
 			},
 		}
-		log.Println(first_task)
 
 		// 優先度に基づいてタスクを生成
 		task, locations, max_time,first, err := chart_CreateTask(simple_recipe, prioritys_recepi, recipe_nums, task_frame, location, max_times, first_task) // Task型を取得
@@ -150,14 +151,22 @@ func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []
 
 	temp_time := max_time
 	first_time := 0
+
 	for i, priority := range new_list {
+		// current index iをlocationで調整し、recipesの長さで割った余りを取る
 		i += location
 		i %= len(recipes)
+		
+		// タスクが有効で、レシピが存在し、時間条件を満たす場合
 		if task_bool && recipe_nums[i] > 0 && (recipes[i].Divide[recipe_nums[i]-1].Time <= max_time || first_task) {			
+			// 初回タスクの場合の処理
 			if first_task {
+				// 初めての時間設定
 				if first_time == 0 {
 					first_time = recipes[i].Divide[recipe_nums[i]-1].Time
-				}else if first_time < recipes[i].Divide[recipe_nums[i]-1].Time {
+				// 既に初回の時間が設定されている場合
+				} else if first_time < recipes[i].Divide[recipe_nums[i]-1].Time {
+					// 時間が初回より長い場合は空を設定
 					task_frame[0].Tejuns[priority] = Tejun{
 						Parallel: true,
 					}
@@ -165,33 +174,43 @@ func chart_CreateTask(recipes []ShortRecipe, priorities []string, recipe_nums []
 				}
 			}
 			
+			// タスクフレームにタスクを追加
 			task_frame[0].Tejuns[priority] = Tejun{
 				Id:       recipes[i].Divide[recipe_nums[i]-1].Uid,
 				Name:     string(recipes[i].Divide[recipe_nums[i]-1].Displayname),
 				Time:     recipes[i].Divide[recipe_nums[i]-1].Time,
 				Parallel: recipes[i].Divide[recipe_nums[i]-1].Parallel,
 			}
-
+	
+			// 使用したレシピのカウントを減少
 			recipe_nums[i]--
-
-			// 並行処理可の場合は、次の手順を追加
+	
+			// 並行処理ができない場合の処理
 			if !(recipes[i].Divide[recipe_nums[i]].Parallel) {
 				task_bool = false
 				location = i + 1
 				location %= len(recipes)
 			}
+	
+			if first_task {
+				temp_time += first_time
+			}
 
-			//前述までのタスクより時間を越さないため
+			// 時間制限を超えないように調整
 			if recipes[i].Divide[recipe_nums[i]].Time > temp_time {
 				temp_time = recipes[i].Divide[recipe_nums[i]].Time
 			}
+
+
+			
 		} else {
+			// 条件を満たさない場合は並行処理として設定
 			task_frame[0].Tejuns[priority] = Tejun{
 				Parallel: true,
 			}
 		}
-
 	}
+	
 
 	first_task = false
 	max_time = temp_time
@@ -239,6 +258,7 @@ func chart_Priority(recipes []ShortRecipe) ([]string, error) {
 
 	// 各レシピの状態を確認し、マップに追加
 	for _, recipe := range recipes {
+		log.Print(recipe.Name, recipe.LastSatate)
 		switch recipe.LastSatate {
 		case "hot":
 			stateMap["hot"] = append(stateMap["hot"], recipe.Uid)
@@ -271,7 +291,7 @@ func chart_createtime(tasks []Task) ([]Task,int, error) {
 	// 各タスクに対してループ
 	for i, task := range tasks  { 
 		// 各タスクの手順に対してループ
-			for _, tejun := range task.Tejuns {
+		for _, tejun := range task.Tejuns {
 			// 手順が並行処理不可能であり、次のタスクが存在する場合
 			if !(tejun.Parallel) && i < len(tasks)-1 {
 				startTime += tejun.Time          // 開始時間を更新
@@ -282,6 +302,7 @@ func chart_createtime(tasks []Task) ([]Task,int, error) {
 			if i == len(tasks)-1 && totaltime < tejun.Time {
 				totaltime = tejun.Time
 			}
+			
 		}
 
 		// もしタスクが追加された場合
@@ -305,8 +326,22 @@ func chart_createtime(tasks []Task) ([]Task,int, error) {
 			Tejuns:    tasks[i].Tejuns, // 次のタスクの手順を設定
 		})
 	}
-	
+
 	totaltime += startTime
+
+	for _,task := range tasks {
+		//手順ごとの最大の時間
+		maxtime := 0
+		for _ , tejun := range task.Tejuns {
+			if maxtime < tejun.Time {
+				maxtime = tejun.Time
+			}
+		}
+
+		if totaltime < task.StartTime + maxtime {
+			totaltime = task.StartTime + maxtime
+		}
+	}
 	
 	return new_tasks,totaltime, nil // 新しいタスクリストを返す
 }

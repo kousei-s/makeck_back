@@ -1,10 +1,12 @@
 package services
 
-import "log"
+import (
+	"log"
+)
 
 type ReturnMaterial struct {
 	Name     string `json:"name"`
-	Quantity int    `json:"quantity"`
+	Quantity float32    `json:"quantity"`
 	Unit     string `json:"unit"`
 }
 

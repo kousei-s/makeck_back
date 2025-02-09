@@ -7,4 +7,4 @@ RUN apt install -y git
 RUN apt install -y lsof
 WORKDIR /root/chart
 
-CMD [ "go","run","-x","." ]
+# CMD [ "go","run","-x","." ]

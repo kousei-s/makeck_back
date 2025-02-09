@@ -4,6 +4,8 @@ go 1.23.1
 
 require (
 	github.com/labstack/echo/v4 v4.13.3
+	google.golang.org/grpc v1.69.4
+	google.golang.org/protobuf v1.35.1
 	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.12
 )
@@ -14,8 +16,6 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.23 // indirect
 	golang.org/x/time v0.8.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53 // indirect
-	google.golang.org/grpc v1.69.4 // indirect
-	google.golang.org/protobuf v1.35.1 // indirect
 )
 
 require (

@@ -6,6 +6,7 @@ import (
 	"net"
 	"recipe/models"
 	"recipe/utils"
+	"strings"
 
 	"google.golang.org/grpc"
 )
@@ -56,21 +57,35 @@ func (rserver *RecipeServer) GetRecipe(ctx context.Context, req *RecipeRequest) 
 		utils.Println(process.Material)
 	}
 
+	converted := recipeLastStateToLastState(recipe.LastState)
+	utils.Println(converted)
+
 	return &Recipe{
 		Uid:       recipe.Uid,
 		Name:      recipe.Name,
 		Image:     recipe.Image,
 		Process:   processes,
-		LastState: recipeLastStateToLastState(recipe.LastState),
+		LastState: converted,
 	}, nil
 }
 
 // model の LastState を gRPC の LastState に変換
 func recipeLastStateToLastState(lastState models.LastSatate) LastState {
-	if lastState == models.Hot {
+	utils.Println(lastState)
+	// if lastState == models.Hot {
+	// 	return LastState_HOT
+	// } else if lastState == models.Cool {
+	// 	return LastState_COOL
+	// } else {
+	// 	return LastState_NORMAL
+	// }
+
+	if strings.ToLower(string(lastState)) == "hot" {
 		return LastState_HOT
-	} else if lastState == models.Cool {
+	} else if strings.ToLower(string(lastState)) == "cool" {
 		return LastState_COOL
+	} else if strings.ToLower(string(lastState)) == "reheat" {
+		return LastState_REHEAT
 	} else {
 		return LastState_NORMAL
 	}
@@ -81,7 +96,7 @@ func recipeMaterialToMaterial(material models.Material) Material {
 	return Material{
 		Uid:   material.Uid,
 		Name:  material.Name,
-		Count: int32(material.Count),
+		Count: material.Count,
 		Unit:  material.Unit,
 	}
 }

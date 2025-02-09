@@ -3,7 +3,7 @@ package services
 // 材料を表す構造体
 type Materials_list struct {
 	Name string `json:"material_name"`
-	Quantity     int    `json:"quantity"`
+	Quantity     float32    `json:"quantity"`
 	Unit         string `json:"unit"`
 }
 

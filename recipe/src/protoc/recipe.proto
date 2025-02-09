@@ -22,7 +22,7 @@ enum ProcessType {
 message Material {
     string uid = 1; // 材料ID
     string name = 2; // 材料名
-    int32 count = 3; // 個数
+    float count = 3; // 個数
     string unit = 4; // 単位
 }
 

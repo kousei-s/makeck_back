@@ -97,7 +97,7 @@ func RpcMaterialsToMaterials(materials []*recipe_rpc.Material) []Material {
 		materialsList = append(materialsList, Material{
 			Uid:       material.Uid,
 			Name:      material.Name,
-			Count:     int(material.Count),
+			Count:     material.Count,
 			Unit:      material.Unit,
 			Processid: "",
 		})
@@ -122,6 +122,8 @@ func RpcTypeToProcessType(processType recipe_rpc.ProcessType) ProcessType {
 }
 
 func RpcLastSatateToLastSatate(lastSatate recipe_rpc.LastState) LastSatate {
+	utils.Println(lastSatate)
+
 	if lastSatate == recipe_rpc.LastState_HOT {
 		return Hot
 	}

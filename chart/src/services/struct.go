@@ -23,7 +23,7 @@ const (
 type Material struct {
 	Uid       string `gorm:"primaryKey"` //材料ID
 	Name      string //材料名
-	Count     int    //個数
+	Count     float32    //個数
 	Unit      string //単位
 	Processid string //手順と紐づけ
 }
