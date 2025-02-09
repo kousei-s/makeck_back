@@ -68,7 +68,7 @@ func Debug() {
 		Uid:       "recipe1",
 		Name:      "スパゲティ・ボロネーゼ",
 		Image:     "/images/spaghetti_bolognese.jpg",
-		LastState: Hot,
+		LastState: Cool,
 		Process: []Process{
 			{
 				Uid:         "r1_process1",
@@ -112,8 +112,8 @@ func Debug() {
 				Name:        "鶏肉と野菜を切る",
 				Displayname: "下準備1",
 				Description: "玉ねぎを1個、じゃがいもを2個,鶏肉を300g切る",
-				Parallel:    false,
-				Time:        10,
+				Parallel:    true,
+				Time:        60,
 				Tools:       []Tools{{Uid: "tool1", Name: "包丁", Count: 1, Unit: "本"}},
 				Material: []Material{
 					{Uid: "material1", Name: "鶏肉", Count: 300, Unit: "g", Processid: "process1"},
@@ -128,8 +128,8 @@ func Debug() {
 				Name:        "材料を炒めて、スパイスと水を加えて煮込む。",
 				Displayname: "調理1",
 				Description: "下準備で切った肉と野菜をにカレースパイスを1袋いれ、40分煮込む",
-				Parallel:    true,
-				Time:        40,
+				Parallel:    false,
+				Time:        5,
 				Tools:       []Tools{{Uid: "tool2", Name: "鍋", Count: 1, Unit: "個"}},
 				Material:    []Material{{Uid: "material4", Name: "カレースパイス", Count: 1, Unit: "袋", Processid: "process2"}},
 				Recipeid:    "recipe2",
@@ -211,7 +211,7 @@ func Debug() {
 		Uid:       "recipe4",
 		Name:      "フルーツポンチ",
 		Image:     "/images/fruits_punch.jpg",
-		LastState: Cool,
+		LastState: Normal,
 		Process: []Process{
 			{
 				Uid:         "r4_process1",
@@ -251,7 +251,7 @@ func Debug() {
 		recipe4,
 	}
 
-	//材料を生成
+	//材料一覧を生成
 	materials, err := SearchMaterials(recipes)
 	if err != nil {
 		log.Println(err)
@@ -262,7 +262,7 @@ func Debug() {
 	if err != nil {
 		log.Println(err)
 	}
-	log.Print(string(material_result))
+	_= material_result
 
 	// タスクを生成
 	chart, err := chart_Register(recipes)
